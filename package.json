@@ -1,0 +1,40 @@
+{
+  "name": "antibots.portal.frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.12",
+    "@types/react-router-dom": "^5.3.3",
+    "antd": "^5.9.4",
+    "bufferutil": "^4.0.7",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.6.1",
+    "next": "^13.5.4",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-highlight-words": "^0.20.0",
+    "react-router-dom": "^6.16.0",
+    "utf-8-validate": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/react-highlight-words": "^0.16.5",
+    "autoprefixer": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "postcss": "latest",
+    "sass": "^1.68.0",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}
