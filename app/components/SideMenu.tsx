@@ -12,9 +12,14 @@ const SideMenu = () => {
                     <h1 className={`m-auto ${usePathname() === '/namelist' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Name List</h1>
                 </div>
             </Link>
-            <Link href='/createrule'>
+            <Link href='/webbrule'>
                 <div className='flex h-12'>
-                    <h1 className={`m-auto ${usePathname() === '/createrule' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Create New Rule</h1>
+                    <h1 className={`m-auto ${usePathname() === '/webbrule' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Create Webb Rule</h1>
+                </div>
+            </Link>
+            <Link href='/artemisrule'>
+                <div className='flex h-12'>
+                    <h1 className={`m-auto ${usePathname() === '/artemisrule' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Create Artemis Rule</h1>
                 </div>
             </Link>
             <div className='h-0.5 w-11/12 mx-auto bg-gray-700 my-3'></div>

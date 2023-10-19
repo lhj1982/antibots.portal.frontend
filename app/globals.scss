@@ -17,13 +17,18 @@ body {
   height: fit-content;
 
   h1, h2 {
-      color: white;
+      
       font-family: 'Oswald', sans-serif;
       margin: 0.5rem;
   }
 
   p {
     color: #707072;
+  }
+
+  .ant-btn {
+      background-color: #c8dfff;
+      color: white  !important;
   }
 }
 

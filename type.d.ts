@@ -10,3 +10,10 @@ interface DataType {
     destination: string;
     author: string | null;
 }
+
+type AuthVerifyResponse = {
+    error?: string;
+    data?: {
+        valid: boolean;
+    };
+};

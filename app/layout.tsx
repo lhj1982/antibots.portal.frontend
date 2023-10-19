@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import React from "react";
 import NavBar from "@/app/components/Navbar";
 import SideMenu from "@/app/components/SideMenu";
+import AuthWrapper from "@/app/components/AuthWrapper";
 
 export const metadata: Metadata = {
   title: 'James Webb',
@@ -17,15 +18,17 @@ export default function RootLayout({
   return (
       <html lang="en">
           <body className='bg-white flex flex-col'>
-              <NavBar/>
-              <div className='flex flex-grow overflow-y-auto'>
-                  <div className='w-2/12 overflow-auto'>
-                      <SideMenu/>
+              <AuthWrapper>
+                  <NavBar/>
+                  <div className='flex flex-grow overflow-y-auto'>
+                      <div className='w-2/12 overflow-auto'>
+                          <SideMenu/>
+                      </div>
+                      <div className='w-full'>
+                          {children}
+                      </div>
                   </div>
-                  <div className='w-full'>
-                      {children}
-                  </div>
-              </div>
+              </AuthWrapper>
           </body>
       </html>
   )
