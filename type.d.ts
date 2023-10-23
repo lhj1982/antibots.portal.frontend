@@ -9,7 +9,7 @@ interface DataType {
     creationTime: number;
     destination: string;
     author: string | null;
-}
+};
 
 type AuthVerifyResponse = {
     error?: string;
@@ -17,3 +17,8 @@ type AuthVerifyResponse = {
         valid: boolean;
     };
 };
+
+type FormType = {
+    taskType: string;
+    dataSearchType: string;
+}
