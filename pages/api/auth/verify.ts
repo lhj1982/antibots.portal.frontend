@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import OktaJwtVerifier from '@okta/jwt-verifier';
-import { OKTA_ISSUER, OKTA_AUD } from '@/utils/constants';
+import type { NextApiRequest, NextApiResponse } from "next";
+import OktaJwtVerifier from "@okta/jwt-verifier";
+import { OKTA_ISSUER, OKTA_AUD } from "@/utils/constants";
 
 type ReqBody = {
   data?: {
@@ -12,12 +12,15 @@ type JwtVerifyError = {
   userMessage: string;
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<AuthVerifyResponse>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<AuthVerifyResponse>
+) {
   const body: ReqBody = req.body;
 
   const accessToken = body?.data?.accessToken;
   if (!accessToken) {
-    return res.status(400).json({ error: 'missing access token' });
+    return res.status(400).json({ error: "missing access token" });
   }
 
   const oktaJwtVerifier = new OktaJwtVerifier({

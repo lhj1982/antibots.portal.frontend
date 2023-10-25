@@ -9,6 +9,7 @@ interface DataType {
     creationTime: number;
     destination: string;
     author: string | null;
+    source: string | null;
 };
 
 type AuthVerifyResponse = {
