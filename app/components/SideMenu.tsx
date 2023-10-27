@@ -5,7 +5,7 @@ import {usePathname} from 'next/navigation';
 
 const SideMenu = () => {
     return (
-        <div className='bg-light-black h-full sticky flex flex-col'>
+        <div className='bg-light-black flex flex-col h-full'>
             <div className='h-0.5 w-11/12 mx-auto bg-gray-700 mb-3'></div>
             <Link href='/namelist'>
                 <div className='flex h-12'>

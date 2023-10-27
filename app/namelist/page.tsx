@@ -13,7 +13,7 @@ type DataIndex = keyof DataType;
 const NameList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<any>(0);
   const [currentPage, setCurrentPage] = useState<any>(1);
   const [pageSize, setPageSize] = useState<any>(50);
@@ -36,12 +36,14 @@ const NameList: React.FC = () => {
   };
 
   const fetchPageData = async (pageNum: any, pageSize: any) => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:3001/antibotsweb/v1/list?page=${pageNum}&limit=${pageSize}`
       );
       const { items, totalItems, page, limit } = response.data;
       setData(items);
+      setLoading(false);
       setCurrentPage(page);
       setTotal(totalItems);
     } catch (error) {
@@ -173,6 +175,7 @@ const NameList: React.FC = () => {
       dataIndex: "source",
       key: "source",
       width: "8%",
+      align: "center",
       ...getColumnSearchProps("source"),
     },
     {
@@ -180,6 +183,7 @@ const NameList: React.FC = () => {
       dataIndex: "type",
       key: "type",
       width: "8%",
+      align: "center",
       ...getColumnSearchProps("type"),
     },
     {
@@ -187,12 +191,14 @@ const NameList: React.FC = () => {
       dataIndex: "value",
       key: "value",
       width: "18%",
+      align: "center",
       ...getColumnSearchProps("value"),
     },
     {
       title: "Ttl",
       dataIndex: "ttl",
       key: "ttl",
+      align: "center",
       ...getColumnSearchProps("ttl"),
       sorter: (a, b) => a.ttl - b.ttl,
       sortDirections: ["descend", "ascend"],
@@ -202,6 +208,7 @@ const NameList: React.FC = () => {
       dataIndex: "action",
       key: "action",
       width: "10%",
+      align: "center",
       ...getColumnSearchProps("action"),
     },
     {
@@ -209,27 +216,31 @@ const NameList: React.FC = () => {
       dataIndex: "namespace",
       key: "namespace",
       width: "10%",
+      align: "center",
       ...getColumnSearchProps("namespace"),
     },
     {
       title: "Rule Id",
-      dataIndex: "ruleid",
-      key: "ruleid",
+      dataIndex: "ruleId",
+      key: "ruleId",
       width: "10%",
-      ...getColumnSearchProps("ruleid"),
+      align: "center",
+      ...getColumnSearchProps("ruleId"),
     },
     {
       title: "Task Id",
-      dataIndex: "taskid",
-      key: "taskid",
+      dataIndex: "taskId",
+      key: "taskId",
       width: "10%",
-      ...getColumnSearchProps("taskid"),
+      align: "center",
+      ...getColumnSearchProps("taskId"),
     },
     {
       title: "Creation Time",
       dataIndex: "creationTime",
       key: "creationTime",
       width: "10%",
+      align: "center",
       ...getColumnSearchProps("creationTime"),
       sorter: (a, b) => a.creationTime - b.creationTime,
       sortDirections: ["descend", "ascend"],
@@ -239,6 +250,7 @@ const NameList: React.FC = () => {
       dataIndex: "destination",
       key: "destination",
       width: "10%",
+      align: "center",
       ...getColumnSearchProps("destination"),
     },
     {
@@ -246,26 +258,29 @@ const NameList: React.FC = () => {
       dataIndex: "author",
       key: "author",
       width: "10%",
+      align: "center",
       ...getColumnSearchProps("author"),
     },
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      pagination= {
-       {
-        total: total,
-        defaultCurrent: currentPage,
-        itemRender: itemRender,
-        showQuickJumper: true,
-        onChange : (page, pageSize) => {
-          fetchPageData(page, pageSize)
-        }
-       }
-      }
-    />
+    <div>
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={loading}
+        pagination={{
+          total: total,
+          position: ["bottomCenter"],
+          defaultCurrent: currentPage,
+          itemRender: itemRender,
+          showQuickJumper: true,
+          onChange: (page, pageSize) => {
+            fetchPageData(page, pageSize);
+          },
+        }}
+      />
+    </div>
   );
 };
 

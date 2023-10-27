@@ -68,7 +68,7 @@ export default function WebbRule() {
           <FormControlLabel
             className="type-switch"
             control={<MaterialUISwitch sx={{ m: 1 }} />}
-            onChange={(e) => setDefaultFormType(e.target.checked)}
+            onChange={(e: any) => setDefaultFormType(e.target.checked)}
             label={<h1 className="text-black">Change Task Type</h1>}
           />
         </FormGroup>

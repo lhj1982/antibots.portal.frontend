@@ -5,10 +5,11 @@ import React from "react";
 import NavBar from "@/app/components/Navbar";
 import SideMenu from "@/app/components/SideMenu";
 import AuthWrapper from "@/app/components/AuthWrapper";
+import Head from "next/head";
 
 export const metadata: Metadata = {
-  title: "James Webb",
-  description: "the home page of webb app",
+  title: "Antibots Portal",
+  description: "the portal of the antibots tools",
 };
 
 export default function RootLayout({
@@ -18,6 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Head>
+        <link rel="icon" href="../../public/antibots.svg" />
+      </Head>
       <body className="bg-white flex flex-col">
         <StyledComponentsRegistry>
           <AuthWrapper>
@@ -26,7 +30,7 @@ export default function RootLayout({
               <div className="w-2/12 overflow-auto">
                 <SideMenu />
               </div>
-              <div className="w-full">{children}</div>
+              <div className="w-full ">{children}</div>
             </div>
           </AuthWrapper>
         </StyledComponentsRegistry>

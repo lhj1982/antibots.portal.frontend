@@ -4,8 +4,8 @@ interface DataType {
     value: string;
     action: string | null;
     namespace: string | null;
-    ruleid: string;
-    taskid: string;
+    ruleId: string;
+    taskId: string;
     creationTime: number;
     destination: string;
     author: string | null;
@@ -20,6 +20,8 @@ type AuthVerifyResponse = {
 };
 
 type FormType = {
+    webbSourceType: string;
+    formType: string;
     taskType: string;
     dataSearchType: string;
 }

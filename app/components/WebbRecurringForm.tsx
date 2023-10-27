@@ -9,63 +9,120 @@ import {
   DatePicker,
   InputNumber,
   TimePicker,
+  Button,
+  Checkbox,
 } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
+import { RocketOutlined } from "@ant-design/icons";
 import type { Dayjs } from "dayjs";
 import type { RangePickerProps } from "antd/es/date-picker";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { CloseOutlined } from "@ant-design/icons";
 import type { SelectProps } from "antd";
 import { relative } from "path";
+import SplForm from "./RecurringSplForm";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 dayjs.extend(customParseFormat);
 
 const WebbRecurringForm = () => {
-  const [searchType, setSearchType] = useState("relative");
-  const [absoluteObj, setAbsoluteObj] = useState("");
-  const [recurringObj, setRecurringObj] = useState("");
-  const [recStartTime, setRecStartTime] = useState<Dayjs | null>(null);
-  const [recEndTime, setRecEndTime] = useState<Dayjs | null>(null);
-  const handleDataSearchTypeChange = (value: any) => {
-    setSearchType(value);
-  };
+  const [form] = Form.useForm();
+  const { Option } = Select;
+  const { RangePicker } = DatePicker;
+  dayjs.extend(customParseFormat);
 
+  const [formType, setFormType] = useState<FormType>({
+    webbSourceType: "",
+    formType: "recurring",
+    taskType: "",
+    dataSearchType: "absolute",
+  });
+  const [checked, setChecked] = useState(true);
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= dayjs().endOf("day");
   };
 
-  const absTimeComp = (
-    <Space wrap>
-      <TimePicker
-        value={recStartTime}
-        placeholder="Start Time"
-        onChange={(time: Dayjs) => setRecStartTime(time)}
+  const absoluteTimeComponent = (checked: boolean) => {
+    if (checked) {
+      return (
+        <RangePicker
+          showTime={{
+            hideDisabledOptions: true,
+            defaultValue: [
+              dayjs("00:00:00", "HH:mm:ss"),
+              dayjs("00:00:00", "HH:mm:ss"),
+            ],
+          }}
+          format="YYYY-MM-DD HH:mm:ss"
+          disabledDate={disabledDate}
+        />
+      );
+    }
+    return (
+      // <Space wrap>
+      //   <TimePicker placeholder="Start Time" />
+      //   <TimePicker
+      //     placeholder="End Time"
+      //     // onChange={(time: Dayjs) => setRecEndTime(time)}
+      //   />
+      // </Space>
+      <RangePicker
+        showTime={{
+          format: "HH:mm",
+          defaultValue: [dayjs("00:00", "HH:mm"), dayjs("23:59", "HH:mm")],
+        }}
+        format="YYYY-MM-DD HH:mm"
       />
-      <TimePicker
-        value={recEndTime}
-        placeholder="End Time"
-        onChange={(time: Dayjs) => setRecEndTime(time)}
-      />
-    </Space>
-  );
-  const recTimeComp = (
-    <InputNumber addonAfter="Minutes" defaultValue={0} min={0} />
-  );
+    );
+  };
+
+  const relativeTimeComponent = <InputNumber addonAfter="Minutes" min={0} />;
 
   return (
     <Card
       title={<h1 className="text-black">Create Recurring Rule</h1>}
       className="w-2/3 m-8"
     >
-      <Form>
+      <Form
+        form={form}
+        name="recurring_form"
+        autoComplete="off"
+        initialValues={{ items: [{}] }}
+        className="w-full"
+        onFinish={(values) => {
+          console.log("values: ", values);
+        }}
+      >
+        <Form.Item
+          name="webbSourceType"
+          label="Webb Source Type"
+          rules={[{ required: true }]}
+        >
+          <Select
+            placeholder="Select source type"
+            allowClear
+            onChange={(value: any) => {
+              setFormType({ ...formType, webbSourceType: value });
+            }}
+          >
+            <Option value="splunk">Splunk</Option>
+            <Option value="ali-sls">Ali SLS</Option>
+          </Select>
+        </Form.Item>
         <Form.Item
           name="taskType"
           label="Task Type"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Select a task type" allowClear>
+          <Select
+            placeholder="Select a task type"
+            allowClear
+            onChange={(value: any) => {
+              setFormType({ ...formType, taskType: value });
+            }}
+          >
             <Option value="upmIdBlack">UpmId</Option>
             <Option value="phoneNumberBlack">Phone Number</Option>
             <Option value="countyBlack">County</Option>
@@ -80,105 +137,229 @@ const WebbRecurringForm = () => {
         >
           <Select
             placeholder="Select data search type"
-            defaultValue={"relative"}
             allowClear
-            onChange={handleDataSearchTypeChange}
+            onChange={(value: any) => {
+              setFormType({ ...formType, dataSearchType: value });
+            }}
           >
             <Option value="relative">Relative</Option>
             <Option value="absolute">Absolute</Option>
           </Select>
         </Form.Item>
-        <Form.Item
-          label={
-            searchType == "absolute" ? "Trigger Time" : "Scheduled Interval"
-          }
-        >
-          <Space>
-            <Form.Item
-              name="scheduledInterval"
-              noStyle
-              rules={[{ required: true, message: "required" }]}
-            >
-              <Input
-                style={{ width: 360 }}
-                placeholder="Use Rate or Cron Expression"
-              ></Input>
-            </Form.Item>
-            <Tooltip title="Learn about Rate & Cron Expression">
-              <Typography.Link
-                href="https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html"
-                target="_blank"
+        <Form.Item>
+          <Form.List name="spl_config">
+            {(fields, { add, remove }) => (
+              <div
+                style={{
+                  display: "flex",
+                  rowGap: 16,
+                  flexDirection: "column",
+                  flex: 1,
+                }}
               >
-                Need Help?
-              </Typography.Link>
-            </Tooltip>
-          </Space>
+                {fields.map((field) => (
+                  <Card
+                    size="small"
+                    title={`Spl ${field.name + 1}`}
+                    key={field.key}
+                    extra={
+                      <CloseOutlined
+                        onClick={() => {
+                          remove(field.name);
+                        }}
+                      />
+                    }
+                  >
+                    <Form.Item
+                      label={
+                        formType.dataSearchType === "absolute"
+                          ? "Search Time Range"
+                          : "Search Past"
+                      }
+                      rules={[{ required: true }]}
+                      name={[field.name, "searchTimeRange"]}
+                    >
+                      {formType.dataSearchType == "relative"
+                        ? relativeTimeComponent
+                        : absoluteTimeComponent(checked)}
+                    </Form.Item>
+                    <Form.Item>
+                      <Checkbox
+                        className="ml-4"
+                        checked={checked}
+                        onChange={(e) => {
+                          console.log(`checked = ${e.target.checked}`);
+                          setChecked(e.target.checked);
+                        }}
+                      >
+                        Time with Date
+                      </Checkbox>
+                    </Form.Item>
+                    <Form.Item
+                      label={
+                        formType.dataSearchType == "relative"
+                          ? "Scheduled Interval"
+                          : "Trigger Time"
+                      }
+                      name={[field.name, "scheduledInterval"]}
+                      rules={[{ required: true, message: "required" }]}
+                    >
+                      <Space>
+                        <Form.Item name="scheduledInterval" noStyle>
+                          <Input
+                            style={{ width: 360 }}
+                            placeholder="Use Rate or Cron Expression"
+                          ></Input>
+                        </Form.Item>
+                        <Tooltip title="Learn about Rate & Cron Expression">
+                          <Typography.Link
+                            href="https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html"
+                            target="_blank"
+                          >
+                            Need Help?
+                          </Typography.Link>
+                        </Tooltip>
+                      </Space>
+                    </Form.Item>
+                    <Form.Item
+                      label="Rule Id"
+                      name={[field.name, "ruleId"]}
+                      rules={[{ required: true, message: "required" }]}
+                    >
+                      <Space>
+                        <Form.Item name="ruleId" noStyle>
+                          <Input
+                            style={{ width: 400 }}
+                            placeholder="Enter the ruleId corresponding to the splunk query below"
+                          ></Input>
+                        </Form.Item>
+                        <Tooltip title="Webb Rule Cheat Sheet">
+                          <Typography.Link
+                            href="https://confluence.nike.com/pages/viewpage.action?pageId=825536585"
+                            target="_blank"
+                          >
+                            Not Sure Which Rule to Use?
+                          </Typography.Link>
+                        </Tooltip>
+                      </Space>
+                    </Form.Item>
+                    <Form.Item
+                      label="Splunk Query"
+                      rules={[{ required: true }]}
+                      name={[field.name, "spl"]}
+                    >
+                      <Input.TextArea
+                        rows={4}
+                        placeholder="Input your splunk query here"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Expiration"
+                      rules={[{ required: true }]}
+                      name={[field.name, "ttl"]}
+                    >
+                      <InputNumber
+                        addonAfter="Days"
+                        min={1}
+                        placeholder="ttl"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Destination"
+                      rules={[{ required: true }]}
+                      name={[field.name, "destination"]}
+                    >
+                      <Select
+                        mode="multiple"
+                        allowClear
+                        style={{ width: "50%" }}
+                        placeholder="Please select destination"
+                      >
+                        <Option value="fairness">fairness</Option>
+                        <Option value="edgeKV">edgeKV</Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Action"
+                      rules={[{ required: true }]}
+                      name={[field.name, "action"]}
+                    >
+                      <Select placeholder="Select an action" allowClear>
+                        <Option value="captcha">Captcha</Option>
+                        <Option value="block">Block</Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Name Space"
+                      rules={[{ required: true }]}
+                      name={[field.name, "nameSpace"]}
+                    >
+                      <Select
+                        placeholder="Select an edgekv name space"
+                        allowClear
+                      >
+                        <Option value="buy_suspect_users">
+                          buy_suspect_users
+                        </Option>
+                        <Option value="order_suspect_users">
+                          order_suspect_users
+                        </Option>
+                        <Option value="payment_suspect_users">
+                          payment_suspect_users
+                        </Option>
+                      </Select>
+                    </Form.Item>
+                    {formType.webbSourceType === "ali-sls" && (
+                      <Form.Item
+                        label="Ali SLS project"
+                        rules={[{ required: true }]}
+                        name={[field.name, "project"]}
+                      >
+                        <Input placeholder="Ali SLS project" />
+                      </Form.Item>
+                    )}
+                    {formType.webbSourceType === "ali-sls" && (
+                      <Form.Item
+                        label="Ali SLS logstore"
+                        rules={[{ required: true }]}
+                        name={[field.name, "logstore"]}
+                      >
+                        <Input placeholder="Ali SLS logstore" />
+                      </Form.Item>
+                    )}
+                  </Card>
+                ))}
+                <Button type="dashed" onClick={() => add()} block>
+                  + Add New SPL
+                </Button>
+              </div>
+            )}
+          </Form.List>
         </Form.Item>
         <Form.Item
-          label={
-            searchType == "absolute"
-              ? "Search Time Range"
-              : "Search Minutes Before"
-          }
-          rules={[{ required: true }]}
+          wrapperCol={{
+            xs: { span: 24, offset: 0 },
+            sm: { span: 16, offset: 10 },
+          }}
         >
-          {searchType == "absolute" ? absTimeComp : recTimeComp}
-        </Form.Item>
-        <Form.Item label="Splunk Query" rules={[{ required: true }]}>
-          <Input.TextArea rows={4} placeholder="Input your splunk query here" />
-        </Form.Item>
-        <Form.Item label="Rule Id">
-          <Space>
-            <Form.Item
-              name="ruleId"
-              noStyle
-              rules={[{ required: true, message: "required" }]}
-            >
-              <Input
-                style={{ width: 400 }}
-                placeholder="Enter the ruleId corresponding to the splunk query above"
-              ></Input>
-            </Form.Item>
-            <Tooltip title="Webb Rule Cheat Sheet">
-              <Typography.Link
-                href="https://confluence.nike.com/pages/viewpage.action?pageId=825536585"
-                target="_blank"
-              >
-                Not Sure Which Rule to Use?
-              </Typography.Link>
-            </Tooltip>
-          </Space>
-        </Form.Item>
-        <Form.Item label="Expiration" rules={[{ required: true }]}>
-          <InputNumber addonAfter="Days" min={1} />
-        </Form.Item>
-        <Form.Item label="Destination" rules={[{ required: true }]}>
-          <Select
-            mode="multiple"
-            allowClear
-            style={{ width: "50%" }}
-            placeholder="Please select destination"
+          <Button
+            type="primary"
+            shape="round"
+            icon={<RocketOutlined />}
+            size="large"
+            onClick={() => {
+              form.submit();
+            }}
           >
-            <Option value="fairness">fairness</Option>
-            <Option value="edgeKV">edgeKV</Option>
-          </Select>
+            Submit
+          </Button>
         </Form.Item>
-        <Form.Item name="action" label="Action" rules={[{ required: true }]}>
-          <Select placeholder="Select an action" allowClear>
-            <Option value="captcha">Captcha</Option>
-            <Option value="block">Block</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="nameSpace"
-          label="Name Space"
-          rules={[{ required: true }]}
-        >
-          <Select placeholder="Select an edgekv name space" allowClear>
-            <Option value="buy_suspect_users">buy_suspect_users</Option>
-            <Option value="order_suspect_users">order_suspect_users</Option>
-            <Option value="payment_suspect_users">payment_suspect_users</Option>
-          </Select>
+        <Form.Item noStyle shouldUpdate>
+          {() => (
+            <Typography>
+              <pre>{JSON.stringify(form.getFieldsValue(), null, 2)}</pre>
+            </Typography>
+          )}
         </Form.Item>
       </Form>
     </Card>

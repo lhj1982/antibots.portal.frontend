@@ -14,20 +14,22 @@ import {
   DatePicker,
   Tooltip,
   InputNumber,
+  TimePicker,
 } from "antd";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 dayjs.extend(customParseFormat);
 
-const SplForm: React.FC<FormType> = (props) => {
+const OneTimeSplForm: React.FC<FormType> = (props) => {
   const [form] = Form.useForm();
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= dayjs().endOf("day");
   };
- 
-  const {dataSearchType} = props;
+
+  const { dataSearchType, formType, webbSourceType } = props;
   console.log(dataSearchType);
+
   const absoluteTimeComponent = (
     <RangePicker
       showTime={{
@@ -41,6 +43,7 @@ const SplForm: React.FC<FormType> = (props) => {
       disabledDate={disabledDate}
     />
   );
+
   const recuringTimeComponent = (
     <InputNumber addonAfter="Minutes" defaultValue={0} min={0} />
   );
@@ -73,18 +76,22 @@ const SplForm: React.FC<FormType> = (props) => {
               >
                 <Form.Item
                   label={
-                    dataSearchType == "absolute"
+                    dataSearchType === "absolute"
                       ? "Search Time Range"
-                      : "Search Minutes Before"
+                      : "Search Past"
                   }
                   rules={[{ required: true }]}
                   name={[field.name, "searchTimeRange"]}
                 >
-                  {dataSearchType == "relative" ? recuringTimeComponent: absoluteTimeComponent  }
+                  {dataSearchType == "relative"
+                    ? recuringTimeComponent
+                    : absoluteTimeComponent}
                 </Form.Item>
                 <Form.Item
                   label={
-                    dataSearchType == "relative" ? "Scheduled Interval":"Trigger Time"
+                    dataSearchType == "relative"
+                      ? "Scheduled Interval"
+                      : "Trigger Time"
                   }
                   name={[field.name, "scheduledInterval"]}
                 >
@@ -188,6 +195,24 @@ const SplForm: React.FC<FormType> = (props) => {
                     </Option>
                   </Select>
                 </Form.Item>
+                {webbSourceType === "ali-sls" && (
+                  <Form.Item
+                    label="Ali SLS project"
+                    rules={[{ required: true }]}
+                    name={[field.name, "project"]}
+                  >
+                    <Input placeholder="Ali SLS project" />
+                  </Form.Item>
+                )}
+                {webbSourceType === "ali-sls" && (
+                  <Form.Item
+                    label="Ali SLS logstore"
+                    rules={[{ required: true }]}
+                    name={[field.name, "logstore"]}
+                  >
+                    <Input placeholder="Ali SLS logstore" />
+                  </Form.Item>
+                )}
               </Card>
             ))}
 
@@ -209,4 +234,4 @@ const SplForm: React.FC<FormType> = (props) => {
   );
 };
 
-export default SplForm;
+export default OneTimeSplForm;
