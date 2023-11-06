@@ -10,21 +10,15 @@ import {
   InputNumber,
   TimePicker,
   Button,
-  Checkbox,
 } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { RocketOutlined } from "@ant-design/icons";
-import type { Dayjs } from "dayjs";
 import type { RangePickerProps } from "antd/es/date-picker";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CloseOutlined } from "@ant-design/icons";
-import type { SelectProps } from "antd";
-import { relative } from "path";
-import SplForm from "./RecurringSplForm";
+import handleSubmitData from "@/lib/handleSubmitData";
 
-const { Option } = Select;
-const { RangePicker } = DatePicker;
 dayjs.extend(customParseFormat);
 
 const WebbRecurringForm = () => {
@@ -39,44 +33,23 @@ const WebbRecurringForm = () => {
     taskType: "",
     dataSearchType: "absolute",
   });
-  const [checked, setChecked] = useState(true);
+  const [timeType, setTimeType] = useState("with_date");
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= dayjs().endOf("day");
   };
 
-  const absoluteTimeComponent = (checked: boolean) => {
-    if (checked) {
-      return (
-        <RangePicker
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: [
-              dayjs("00:00:00", "HH:mm:ss"),
-              dayjs("00:00:00", "HH:mm:ss"),
-            ],
-          }}
-          format="YYYY-MM-DD HH:mm:ss"
-          disabledDate={disabledDate}
-        />
-      );
-    }
-    return (
-      // <Space wrap>
-      //   <TimePicker placeholder="Start Time" />
-      //   <TimePicker
-      //     placeholder="End Time"
-      //     // onChange={(time: Dayjs) => setRecEndTime(time)}
-      //   />
-      // </Space>
-      <RangePicker
-        showTime={{
-          format: "HH:mm",
-          defaultValue: [dayjs("00:00", "HH:mm"), dayjs("23:59", "HH:mm")],
-        }}
-        format="YYYY-MM-DD HH:mm"
-      />
-    );
-  };
+  const absoluteTimeComponent = (
+    <Select
+      placeholder="Select time type"
+      allowClear
+      onChange={(value: any) => {
+        setTimeType(value);
+      }}
+    >
+      <Option value="with_date">Time With Date</Option>
+      <Option value="without_date">Time Without Date</Option>
+    </Select>
+  );
 
   const relativeTimeComponent = <InputNumber addonAfter="Minutes" min={0} />;
 
@@ -93,6 +66,8 @@ const WebbRecurringForm = () => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
+          const res = handleSubmitData(values);
+          console.log("res: ", res);
         }}
       >
         <Form.Item
@@ -146,6 +121,32 @@ const WebbRecurringForm = () => {
             <Option value="absolute">Absolute</Option>
           </Select>
         </Form.Item>
+        <Form.Item
+          label={
+            formType.dataSearchType == "relative"
+              ? "Scheduled Interval"
+              : "Trigger Time"
+          }
+          name="scheduledInterval"
+          rules={[{ required: true, message: "required" }]}
+        >
+          <Space>
+            <Form.Item name="scheduledInterval" noStyle>
+              <Input
+                style={{ width: 360 }}
+                placeholder="Use Rate or Cron Expression"
+              ></Input>
+            </Form.Item>
+            <Tooltip title="Learn about Rate & Cron Expression">
+              <Typography.Link
+                href="https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html"
+                target="_blank"
+              >
+                Need Help?
+              </Typography.Link>
+            </Tooltip>
+          </Space>
+        </Form.Item>
         <Form.Item>
           <Form.List name="spl_config">
             {(fields, { add, remove }) => (
@@ -172,55 +173,68 @@ const WebbRecurringForm = () => {
                   >
                     <Form.Item
                       label={
-                        formType.dataSearchType === "absolute"
-                          ? "Search Time Range"
-                          : "Search Past"
+                        formType.dataSearchType === "relative"
+                          ? "Search Past"
+                          : "Select Time Type"
                       }
                       rules={[{ required: true }]}
-                      name={[field.name, "searchTimeRange"]}
+                      name={[
+                        field.name,
+                        formType.dataSearchType === "relative"
+                          ? "searchTimeRange"
+                          : "timeType",
+                      ]}
                     >
-                      {formType.dataSearchType == "relative"
+                      {formType.dataSearchType === "relative"
                         ? relativeTimeComponent
-                        : absoluteTimeComponent(checked)}
+                        : absoluteTimeComponent}
                     </Form.Item>
-                    <Form.Item>
-                      <Checkbox
-                        className="ml-4"
-                        checked={checked}
-                        onChange={(e) => {
-                          console.log(`checked = ${e.target.checked}`);
-                          setChecked(e.target.checked);
-                        }}
-                      >
-                        Time with Date
-                      </Checkbox>
-                    </Form.Item>
-                    <Form.Item
-                      label={
-                        formType.dataSearchType == "relative"
-                          ? "Scheduled Interval"
-                          : "Trigger Time"
-                      }
-                      name={[field.name, "scheduledInterval"]}
-                      rules={[{ required: true, message: "required" }]}
-                    >
-                      <Space>
-                        <Form.Item name="scheduledInterval" noStyle>
-                          <Input
-                            style={{ width: 360 }}
-                            placeholder="Use Rate or Cron Expression"
-                          ></Input>
+                    {formType.dataSearchType === "absolute" &&
+                      timeType === "with_date" && (
+                        <Form.Item
+                          label={"Search Time Range"}
+                          rules={[{ required: true }]}
+                        >
+                          <Space wrap>
+                            <Form.Item
+                              name={[field.name, "searchStartTime"]}
+                              rules={[{ required: true }]}
+                            >
+                              <DatePicker
+                                placeholder="Start Date Time"
+                                showTime
+                                disabledDate={disabledDate}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              name={[field.name, "searchEndTime"]}
+                              rules={[{ required: true }]}
+                            >
+                              <DatePicker
+                                placeholder="End Date Time"
+                                showTime
+                                disabledDate={disabledDate}
+                              />
+                            </Form.Item>
+                          </Space>
                         </Form.Item>
-                        <Tooltip title="Learn about Rate & Cron Expression">
-                          <Typography.Link
-                            href="https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html"
-                            target="_blank"
-                          >
-                            Need Help?
-                          </Typography.Link>
-                        </Tooltip>
-                      </Space>
-                    </Form.Item>
+                      )}
+                    {formType.dataSearchType === "absolute" &&
+                      timeType === "without_date" && (
+                        <Form.Item
+                          label={"Search Time Range"}
+                          rules={[{ required: true }]}
+                        >
+                          <Space wrap>
+                            <Form.Item name={[field.name, "searchStartTime"]}>
+                              <TimePicker placeholder="Start Time" />
+                            </Form.Item>
+                            <Form.Item name={[field.name, "searchEndTime"]}>
+                              <TimePicker placeholder="End Time" />
+                            </Form.Item>
+                          </Space>
+                        </Form.Item>
+                      )}
                     <Form.Item
                       label="Rule Id"
                       name={[field.name, "ruleId"]}

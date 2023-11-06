@@ -12,14 +12,13 @@ import {
 } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
-import { RocketOutlined } from '@ant-design/icons';
+import { RocketOutlined } from "@ant-design/icons";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CloseOutlined } from "@ant-design/icons";
 import { RangePickerProps } from "antd/es/date-picker";
+import moment from "moment";
+import handleSubmitData from "@/lib/handleSubmitData";
 
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-dayjs.extend(customParseFormat);
 
 const WebbOneTimeForm = () => {
   const [form] = Form.useForm();
@@ -33,27 +32,10 @@ const WebbOneTimeForm = () => {
     taskType: "",
     dataSearchType: "absolute",
   });
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    return current && current >= dayjs().endOf("day");
+    return current && current >= moment().endOf("day");
   };
-
-  const absoluteTimeComponent = (
-    <RangePicker
-      showTime={{
-        hideDisabledOptions: true,
-        defaultValue: [
-          dayjs("00:00:00", "HH:mm:ss"),
-          dayjs("00:00:00", "HH:mm:ss"),
-        ],
-      }}
-      format="YYYY-MM-DD HH:mm:ss"
-      disabledDate={disabledDate}
-    />
-  );
-
-  const relativeTimeComponent = (
-    <InputNumber addonAfter="Minutes"  min={0} />
-  );
 
   return (
     <Card
@@ -66,8 +48,10 @@ const WebbOneTimeForm = () => {
         autoComplete="off"
         initialValues={{ items: [{}] }}
         className="w-full"
-        onFinish={(values)=>{
+        onFinish={(values) => {
           console.log("values: ", values);
+          const res = handleSubmitData(values);
+          console.log("res: ", res);
         }}
       >
         <Form.Item
@@ -121,6 +105,32 @@ const WebbOneTimeForm = () => {
             <Option value="absolute">Absolute</Option>
           </Select>
         </Form.Item>
+        <Form.Item
+          label={
+            formType.dataSearchType == "relative"
+              ? "Scheduled Interval"
+              : "Trigger Time"
+          }
+          name="scheduledInterval"
+          rules={[{ required: true, message: "required" }]}
+        >
+          <Space>
+            <Form.Item name="scheduledInterval" noStyle>
+              <Input
+                style={{ width: 360 }}
+                placeholder="Use Rate or Cron Expression"
+              ></Input>
+            </Form.Item>
+            <Tooltip title="Learn about Rate & Cron Expression">
+              <Typography.Link
+                href="https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html"
+                target="_blank"
+              >
+                Need Help?
+              </Typography.Link>
+            </Tooltip>
+          </Space>
+        </Form.Item>
         <Form.Item>
           <Form.List name="spl_config">
             {(fields, { add, remove }) => (
@@ -145,45 +155,38 @@ const WebbOneTimeForm = () => {
                       />
                     }
                   >
-                    <Form.Item
-                      label={
-                        formType.dataSearchType === "absolute"
-                          ? "Search Time Range"
-                          : "Search Past"
-                      }
-                      rules={[{ required: true }]}
-                      name={[field.name, "searchTimeRange"]}
-                    >
-                      {formType.dataSearchType == "relative"
-                        ? relativeTimeComponent
-                        : absoluteTimeComponent}
-                    </Form.Item>
-                    <Form.Item
-                      label={
-                        formType.dataSearchType == "relative"
-                          ? "Scheduled Interval"
-                          : "Trigger Time"
-                      }
-                      name={[field.name, "scheduledInterval"]}
-                      rules={[{ required: true, message: "required" }]}
-                    >
-                      <Space>
-                        <Form.Item name="scheduledInterval" noStyle>
-                          <Input
-                            style={{ width: 360 }}
-                            placeholder="Use Rate or Cron Expression"
-                          ></Input>
-                        </Form.Item>
-                        <Tooltip title="Learn about Rate & Cron Expression">
-                          <Typography.Link
-                            href="https://docs.aws.amazon.com/lambda/latest/dg/services-cloudwatchevents-expressions.html"
-                            target="_blank"
-                          >
-                            Need Help?
-                          </Typography.Link>
-                        </Tooltip>
-                      </Space>
-                    </Form.Item>
+                    {formType.dataSearchType === "absolute" && (
+                      <Form.Item
+                        label={"Search Time Range"}
+                        rules={[{ required: true }]}
+                      >
+                        <Space wrap>
+                          <Form.Item name={[field.name, "searchStartTime"]}>
+                            <DatePicker
+                              placeholder="Start Date Time"
+                              showTime
+                              disabledDate={disabledDate}
+                            />
+                          </Form.Item>
+                          <Form.Item name={[field.name, "searchEndTime"]}>
+                            <DatePicker
+                              placeholder="End Date Time"
+                              showTime
+                              disabledDate={disabledDate}
+                            />
+                          </Form.Item>
+                        </Space>
+                      </Form.Item>
+                    )}
+                    {formType.dataSearchType === "relative" && (
+                      <Form.Item
+                        label={"Search Past"}
+                        rules={[{ required: true }]}
+                        name={[field.name, "searchTimeRange"]}
+                      >
+                        <InputNumber addonAfter="Minutes" min={0} />
+                      </Form.Item>
+                    )}
                     <Form.Item
                       label="Rule Id"
                       name={[field.name, "ruleId"]}
@@ -297,12 +300,19 @@ const WebbOneTimeForm = () => {
         </Form.Item>
         <Form.Item
           wrapperCol={{
-            xs: { span: 24, offset: 0},
+            xs: { span: 24, offset: 0 },
             sm: { span: 16, offset: 10 },
           }}
-          
         >
-          <Button type="primary" shape="round" icon={<RocketOutlined />} size='large' onClick={()=>{form.submit()}}>
+          <Button
+            type="primary"
+            shape="round"
+            icon={<RocketOutlined />}
+            size="large"
+            onClick={() => {
+              form.submit();
+            }}
+          >
             Submit
           </Button>
         </Form.Item>

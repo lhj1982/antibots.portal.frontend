@@ -25,3 +25,26 @@ type FormType = {
     taskType: string;
     dataSearchType: string;
 }
+
+
+type Spl = {
+    enable: boolean;
+    spl: string;
+    ruleId: string;
+    destination: string;
+    action?: string;
+    nameSpace?: string;
+    expiration: number;
+    override_setting: {
+        dataSearchType: string;
+        absoluteDate: {
+            startDatetime: string;
+            stopDatetime: string;
+        }
+        relativeDate: {
+            timeInMinutes: number;
+        }
+        project: string;
+        logstore: string;
+    }
+}
