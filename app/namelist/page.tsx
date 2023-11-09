@@ -37,11 +37,18 @@ const NameList: React.FC = () => {
 
   const fetchPageData = async (pageNum: any, pageSize: any) => {
     setLoading(true);
+    let config = {
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('sess')}`,
+        user: `${window.localStorage.getItem('email')}`
+      }
+    }
     try {
       const response = await axios.get(
-        `http://localhost:3001/antibotsweb/v1/list?page=${pageNum}&limit=${pageSize}`
+        `http://localhost:3001/antibotswebb/v1/list?page=${pageNum}&limit=${pageSize}`,
+        config
       );
-      const { items, totalItems, page, limit } = response.data;
+      const { items, totalItems, page } = response.data.data;
       setData(items);
       setLoading(false);
       setCurrentPage(page);

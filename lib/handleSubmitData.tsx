@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
+import axios from "axios";
 
-export default function handleSubmitData( data: any ) {
+function generateData(data: any) {
   const {
     webbSourceType,
-    dataSearchType,
+    dateSearchType,
     taskType,
     spl_config,
     scheduledInterval,
@@ -21,27 +22,27 @@ export default function handleSubmitData( data: any ) {
     obj.nameSpace = item.nameSpace;
     obj.expiration = item.ttl;
     obj.override_setting = {
-        dataSearchType: '',
-        absoluteDate: {
-          startDatetime: '',
-          stopDatetime: ''
-        },
-        relativeDate: {
-          timeInMinutes: 0
-        },
-        project: '',
-        logstore: ''
-      };
-    
-    switch (dataSearchType) {
+      dateSearchType: "",
+      absoluteDate: {
+        startDatetime: "",
+        stopDatetime: "",
+      },
+      relativeDate: {
+        timeInMinutes: 0,
+      },
+      project: "",
+      logstore: "",
+    };
+
+    switch (dateSearchType) {
       case "absolute":
-        let formatType = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
-        if(item.timeType === 'without_date'){
-            formatType = 'HH:mm:ss.SSSZ';
+        let formatType = "YYYY-MM-DDTHH:mm:ss.SSSZ";
+        if (item.timeType === "without_date") {
+          formatType = "HH:mm:ss.SSSZ";
         }
-        obj.override_setting.dataSearchType = "absolute";
+        obj.override_setting.dateSearchType = "absolute";
         obj.override_setting.absoluteDate = {
-          startDatetime:  dayjs(item.searchStartTime).format(formatType),
+          startDatetime: dayjs(item.searchStartTime).format(formatType),
           stopDatetime: dayjs(item.searchEndTime).format(formatType),
         };
         obj.override_setting.relativeDate = {
@@ -49,7 +50,7 @@ export default function handleSubmitData( data: any ) {
         };
         break;
       case "relative":
-        obj.override_setting.dataSearchType = "relative";
+        obj.override_setting.dateSearchType = "relative";
         obj.override_setting.absoluteDate = {
           startDatetime: "",
           stopDatetime: "",
@@ -77,7 +78,7 @@ export default function handleSubmitData( data: any ) {
                       "${taskType}" : {
                           "enable": true,
                           "default_setting": {
-                              "dateSearchType": "${dataSearchType}",
+                              "dateSearchType": "${dateSearchType}",
                               "absoluteDate": {
                                   "startDatetime": "2023-07-31T13:00:00.000+08:00",
                                   "stopDatetime": "2023-07-31T17:10:00.000+08:00"
@@ -86,10 +87,28 @@ export default function handleSubmitData( data: any ) {
                                   "timeInMinutes": 15
                                 }
                           },
-                          "scheduledInterval": "${scheduledInterval}",
+                          "scheduleIntervals": "${scheduledInterval}",
                           "schedule" : ${splStr}
                       }
                   }
               }`;
   return JSON.parse(res);
-};
+}
+
+export default async function handleSubmitData(
+  searchType: string,
+  taskType: string,
+  data: any
+) {
+  const generatedData = generateData(data);
+  console.log("Generated Data: ", generatedData);
+  const response = await axios.post("http://localhost:3001/antibotswebb/v1/upload", generatedData, {
+    headers: { 
+        "Authorization": `Bearer ${window.localStorage.getItem('sess')}`,
+        "Task-Type": taskType, 
+        "Search-Type": searchType,
+        "User": `${window.localStorage.getItem('email')}`
+    },
+  });
+  return response;
+}

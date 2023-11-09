@@ -9,6 +9,7 @@ import {
   InputNumber,
   Input,
   Tooltip,
+  Modal,
 } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
@@ -18,7 +19,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { RangePickerProps } from "antd/es/date-picker";
 import moment from "moment";
 import handleSubmitData from "@/lib/handleSubmitData";
-
+import SubmitResult from "./SubmitResult";
 
 const WebbOneTimeForm = () => {
   const [form] = Form.useForm();
@@ -30,7 +31,14 @@ const WebbOneTimeForm = () => {
     webbSourceType: "",
     formType: "oneTime",
     taskType: "",
-    dataSearchType: "absolute",
+    dateSearchType: "absolute",
+  });
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
+    statusCode: 0,
+    statusMessage: "",
   });
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -50,8 +58,30 @@ const WebbOneTimeForm = () => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
-          const res = handleSubmitData(values);
+          const res = handleSubmitData("oneTime", formType.taskType, values);
           console.log("res: ", res);
+          res
+            .then((res) => {
+              console.log(res.status);
+              console.log(res.data.message);
+              setSubmitStatus({
+                ...submitStatus,
+                statusCode: res.status,
+                statusMessage: res.data.message,
+              });
+            })
+            .catch((err) => {
+              console.log(err.response.status);
+              console.log(err.message);
+              setSubmitStatus({
+                ...submitStatus,
+                statusCode: err.response.status,
+                statusMessage: err.message,
+              });
+            });
+          setTimeout(()=> {
+            setShowModal(true);
+          },1500)
         }}
       >
         <Form.Item
@@ -90,7 +120,7 @@ const WebbOneTimeForm = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          name="dataSearchType"
+          name="dateSearchType"
           label="Data Search Type"
           rules={[{ required: true }]}
         >
@@ -98,7 +128,7 @@ const WebbOneTimeForm = () => {
             placeholder="Select data search type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, dataSearchType: value });
+              setFormType({ ...formType, dateSearchType: value });
             }}
           >
             <Option value="relative">Relative</Option>
@@ -107,7 +137,7 @@ const WebbOneTimeForm = () => {
         </Form.Item>
         <Form.Item
           label={
-            formType.dataSearchType == "relative"
+            formType.dateSearchType == "relative"
               ? "Scheduled Interval"
               : "Trigger Time"
           }
@@ -155,7 +185,7 @@ const WebbOneTimeForm = () => {
                       />
                     }
                   >
-                    {formType.dataSearchType === "absolute" && (
+                    {formType.dateSearchType === "absolute" && (
                       <Form.Item
                         label={"Search Time Range"}
                         rules={[{ required: true }]}
@@ -178,7 +208,7 @@ const WebbOneTimeForm = () => {
                         </Space>
                       </Form.Item>
                     )}
-                    {formType.dataSearchType === "relative" && (
+                    {formType.dateSearchType === "relative" && (
                       <Form.Item
                         label={"Search Past"}
                         rules={[{ required: true }]}
@@ -294,6 +324,15 @@ const WebbOneTimeForm = () => {
                 <Button type="dashed" onClick={() => add()} block>
                   + Add New SPL
                 </Button>
+                <Modal
+                  open={showModal}
+                  onOk={() => setShowModal(false)}
+                >
+                  <SubmitResult
+                    statusCode={submitStatus.statusCode}
+                    statusMessage={submitStatus.statusMessage}
+                  />
+                </Modal>
               </div>
             )}
           </Form.List>

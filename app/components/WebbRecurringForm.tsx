@@ -10,6 +10,7 @@ import {
   InputNumber,
   TimePicker,
   Button,
+  Modal,
 } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
@@ -18,6 +19,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CloseOutlined } from "@ant-design/icons";
 import handleSubmitData from "@/lib/handleSubmitData";
+import SubmitResult from "./SubmitResult";
 
 dayjs.extend(customParseFormat);
 
@@ -31,8 +33,16 @@ const WebbRecurringForm = () => {
     webbSourceType: "",
     formType: "recurring",
     taskType: "",
-    dataSearchType: "absolute",
+    dateSearchType: "absolute",
   });
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
+    statusCode: 0,
+    statusMessage: "",
+  });
+
   const [timeType, setTimeType] = useState("with_date");
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= dayjs().endOf("day");
@@ -66,8 +76,18 @@ const WebbRecurringForm = () => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
-          const res = handleSubmitData(values);
+          const res = handleSubmitData("recurring", formType.taskType, values);
           console.log("res: ", res);
+          res
+            .then((res) => {
+              console.log(res.status);
+              console.log(res.data.message);
+            })
+            .catch((err) => {
+              console.log(err.response.status);
+              console.log(err.message);
+            });
+          setShowModal(true);
         }}
       >
         <Form.Item
@@ -106,7 +126,7 @@ const WebbRecurringForm = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          name="dataSearchType"
+          name="dateSearchType"
           label="Data Search Type"
           rules={[{ required: true }]}
         >
@@ -114,7 +134,7 @@ const WebbRecurringForm = () => {
             placeholder="Select data search type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, dataSearchType: value });
+              setFormType({ ...formType, dateSearchType: value });
             }}
           >
             <Option value="relative">Relative</Option>
@@ -123,7 +143,7 @@ const WebbRecurringForm = () => {
         </Form.Item>
         <Form.Item
           label={
-            formType.dataSearchType == "relative"
+            formType.dateSearchType == "relative"
               ? "Scheduled Interval"
               : "Trigger Time"
           }
@@ -173,23 +193,23 @@ const WebbRecurringForm = () => {
                   >
                     <Form.Item
                       label={
-                        formType.dataSearchType === "relative"
+                        formType.dateSearchType === "relative"
                           ? "Search Past"
                           : "Select Time Type"
                       }
                       rules={[{ required: true }]}
                       name={[
                         field.name,
-                        formType.dataSearchType === "relative"
+                        formType.dateSearchType === "relative"
                           ? "searchTimeRange"
                           : "timeType",
                       ]}
                     >
-                      {formType.dataSearchType === "relative"
+                      {formType.dateSearchType === "relative"
                         ? relativeTimeComponent
                         : absoluteTimeComponent}
                     </Form.Item>
-                    {formType.dataSearchType === "absolute" &&
+                    {formType.dateSearchType === "absolute" &&
                       timeType === "with_date" && (
                         <Form.Item
                           label={"Search Time Range"}
@@ -219,7 +239,7 @@ const WebbRecurringForm = () => {
                           </Space>
                         </Form.Item>
                       )}
-                    {formType.dataSearchType === "absolute" &&
+                    {formType.dateSearchType === "absolute" &&
                       timeType === "without_date" && (
                         <Form.Item
                           label={"Search Time Range"}
@@ -346,6 +366,15 @@ const WebbRecurringForm = () => {
                 <Button type="dashed" onClick={() => add()} block>
                   + Add New SPL
                 </Button>
+                <Modal
+                  open={showModal}
+                  onOk={() => setShowModal(false)}
+                >
+                  <SubmitResult
+                    statusCode={submitStatus.statusCode}
+                    statusMessage={submitStatus.statusMessage}
+                  />
+                </Modal>
               </div>
             )}
           </Form.List>

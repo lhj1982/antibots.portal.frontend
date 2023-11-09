@@ -23,7 +23,7 @@ type FormType = {
     webbSourceType: string;
     formType: string;
     taskType: string;
-    dataSearchType: string;
+    dateSearchType: string;
 }
 
 
@@ -36,7 +36,7 @@ type Spl = {
     nameSpace?: string;
     expiration: number;
     override_setting: {
-        dataSearchType: string;
+        dateSearchType: string;
         absoluteDate: {
             startDatetime: string;
             stopDatetime: string;
@@ -48,3 +48,8 @@ type Spl = {
         logstore: string;
     }
 }
+
+type SubmitStatus = {
+    statusCode: number;
+    statusMessage: string;
+  };
