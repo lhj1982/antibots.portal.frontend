@@ -21,13 +21,19 @@ import moment from "moment";
 import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 
-const WebbOneTimeForm = () => {
+type SelfProps = {
+  isUpdate: boolean;
+};
+
+const WebbOneTimeForm = (props: SelfProps) => {
+  const { isUpdate } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
   const { RangePicker } = DatePicker;
   dayjs.extend(customParseFormat);
 
   const [formType, setFormType] = useState<FormType>({
+    fileName: "",
     webbSourceType: "",
     formType: "oneTime",
     taskType: "",
@@ -45,6 +51,24 @@ const WebbOneTimeForm = () => {
     return current && current >= moment().endOf("day");
   };
 
+  // submit loading button
+  const [loadings, setLoadings] = useState<boolean[]>([]);
+  const enterLoading = (index: number) => {
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 6000);
+  };
+
   return (
     <Card
       title={<h1 className="text-black">Create OneTime Rule</h1>}
@@ -58,7 +82,7 @@ const WebbOneTimeForm = () => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
-          const res = handleSubmitData("oneTime", formType.taskType, values);
+          const res = handleSubmitData("oneTime", formType.fileName, values);
           console.log("res: ", res);
           res
             .then((res) => {
@@ -79,11 +103,22 @@ const WebbOneTimeForm = () => {
                 statusMessage: err.message,
               });
             });
-          setTimeout(()=> {
+          setTimeout(() => {
             setShowModal(true);
-          },1500)
+          }, 3000);
         }}
       >
+        <Form.Item
+          name="fileName"
+          rules={[{ required: true, message: "required" }]}
+          label="File Name"
+        >
+          <Input
+            style={{ width: 360 }}
+            placeholder="enter the file name end with .yml"
+            disabled={isUpdate}
+          ></Input>
+        </Form.Item>
         <Form.Item
           name="webbSourceType"
           label="Webb Source Type"
@@ -326,6 +361,8 @@ const WebbOneTimeForm = () => {
                 </Button>
                 <Modal
                   open={showModal}
+                  okText="Got it"
+                  cancelButtonProps={{ style: { display: "none" } }}
                   onOk={() => setShowModal(false)}
                 >
                   <SubmitResult
@@ -348,7 +385,9 @@ const WebbOneTimeForm = () => {
             shape="round"
             icon={<RocketOutlined />}
             size="large"
+            loading={loadings[1]}
             onClick={() => {
+              enterLoading(1);
               form.submit();
             }}
           >

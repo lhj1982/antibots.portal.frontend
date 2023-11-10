@@ -56,9 +56,9 @@ export default function WebbRule() {
 
   let webbForm;
   if (defaultFormType) {
-    webbForm = <WebbRecurringForm />;
+    webbForm = <WebbRecurringForm isUpdate={false}/>;
   } else {
-    webbForm = <WebbOneTimeForm />;
+    webbForm = <WebbOneTimeForm isUpdate={false}/>;
   }
 
   return (

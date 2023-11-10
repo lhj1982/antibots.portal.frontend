@@ -20,6 +20,7 @@ type AuthVerifyResponse = {
 };
 
 type FormType = {
+    fileName: string;
     webbSourceType: string;
     formType: string;
     taskType: string;

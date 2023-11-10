@@ -40,7 +40,7 @@ const NameList: React.FC = () => {
     let config = {
       headers: {
         Authorization: `Bearer ${window.localStorage.getItem('sess')}`,
-        user: `${window.localStorage.getItem('email')}`
+        User: `${window.localStorage.getItem('email')}`
       }
     }
     try {

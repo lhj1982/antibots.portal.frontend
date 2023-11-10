@@ -17,6 +17,11 @@ const SideMenu = () => {
                     <h1 className={`m-auto ${usePathname() === '/webbrule' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Create Webb Rule</h1>
                 </div>
             </Link>
+            <Link href='/webbrulelist'>
+                <div className='flex h-12'>
+                    <h1 className={`m-auto ${usePathname() === '/webbrulelist' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Webb Rule List</h1>
+                </div>
+            </Link>
             <Link href='/artemisrule'>
                 <div className='flex h-12'>
                     <h1 className={`m-auto ${usePathname() === '/artemisrule' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Create Artemis Rule</h1>

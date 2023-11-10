@@ -21,15 +21,21 @@ import { CloseOutlined } from "@ant-design/icons";
 import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 
+type SelfProps = {
+  isUpdate: boolean;
+};
+
 dayjs.extend(customParseFormat);
 
-const WebbRecurringForm = () => {
+const WebbRecurringForm = (props: SelfProps) => {
+  const { isUpdate } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
   const { RangePicker } = DatePicker;
   dayjs.extend(customParseFormat);
 
   const [formType, setFormType] = useState<FormType>({
+    fileName: "",
     webbSourceType: "",
     formType: "recurring",
     taskType: "",
@@ -63,6 +69,24 @@ const WebbRecurringForm = () => {
 
   const relativeTimeComponent = <InputNumber addonAfter="Minutes" min={0} />;
 
+  // submit loading button
+  const [loadings, setLoadings] = useState<boolean[]>([]);
+  const enterLoading = (index: number) => {
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 6000);
+  };
+
   return (
     <Card
       title={<h1 className="text-black">Create Recurring Rule</h1>}
@@ -76,20 +100,43 @@ const WebbRecurringForm = () => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
-          const res = handleSubmitData("recurring", formType.taskType, values);
+          const res = handleSubmitData("recurring", formType.fileName, values);
           console.log("res: ", res);
           res
             .then((res) => {
               console.log(res.status);
               console.log(res.data.message);
+              setSubmitStatus({
+                ...submitStatus,
+                statusCode: res.status,
+                statusMessage: res.data.message,
+              });
             })
             .catch((err) => {
               console.log(err.response.status);
               console.log(err.message);
+              setSubmitStatus({
+                ...submitStatus,
+                statusCode: err.response.status,
+                statusMessage: err.message,
+              });
             });
-          setShowModal(true);
+          setTimeout(() => {
+            setShowModal(true);
+          }, 3000);
         }}
       >
+        <Form.Item
+          name="fileName"
+          rules={[{ required: true, message: "required" }]}
+          label="File Name"
+        >
+          <Input
+            style={{ width: 360 }}
+            placeholder="enter the file name end with .yml"
+            disabled={isUpdate}
+          ></Input>
+        </Form.Item>
         <Form.Item
           name="webbSourceType"
           label="Webb Source Type"
@@ -368,6 +415,8 @@ const WebbRecurringForm = () => {
                 </Button>
                 <Modal
                   open={showModal}
+                  okText="Got it"
+                  cancelButtonProps={{ style: { display: "none" } }}
                   onOk={() => setShowModal(false)}
                 >
                   <SubmitResult
@@ -390,7 +439,9 @@ const WebbRecurringForm = () => {
             shape="round"
             icon={<RocketOutlined />}
             size="large"
+            loading={loadings[1]}
             onClick={() => {
+              enterLoading(1);
               form.submit();
             }}
           >

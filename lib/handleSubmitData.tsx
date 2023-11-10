@@ -97,7 +97,7 @@ function generateData(data: any) {
 
 export default async function handleSubmitData(
   searchType: string,
-  taskType: string,
+  fileName: string,
   data: any
 ) {
   const generatedData = generateData(data);
@@ -105,7 +105,7 @@ export default async function handleSubmitData(
   const response = await axios.post("http://localhost:3001/antibotswebb/v1/upload", generatedData, {
     headers: { 
         "Authorization": `Bearer ${window.localStorage.getItem('sess')}`,
-        "Task-Type": taskType, 
+        "FileName": fileName, 
         "Search-Type": searchType,
         "User": `${window.localStorage.getItem('email')}`
     },
