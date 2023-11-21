@@ -11,8 +11,9 @@ import {
   TimePicker,
   Button,
   Modal,
+  FloatButton,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { RocketOutlined } from "@ant-design/icons";
 import type { RangePickerProps } from "antd/es/date-picker";
@@ -20,39 +21,49 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CloseOutlined } from "@ant-design/icons";
 import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
+import { SubmitStatus, WebbFormData } from "@/type";
 
 type SelfProps = {
   isUpdate: boolean;
+  formData: WebbFormData;
 };
 
-dayjs.extend(customParseFormat);
-
 const WebbRecurringForm = (props: SelfProps) => {
-  const { isUpdate } = props;
+  const { isUpdate, formData } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
   const { RangePicker } = DatePicker;
   dayjs.extend(customParseFormat);
 
-  const [formType, setFormType] = useState<FormType>({
+  const [formType, setFormType] = useState("recurring");
+  const [recurringForm, setRecurringForm] = useState<WebbFormData>({
     fileName: "",
     webbSourceType: "",
-    formType: "recurring",
     taskType: "",
     dateSearchType: "absolute",
+    scheduleIntervals: "",
+    spl_config: [],
   });
 
   const [showModal, setShowModal] = useState(false);
 
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
     statusCode: 0,
-    statusMessage: "",
+    statusMessage: "Something Went wrong",
   });
 
-  const [timeType, setTimeType] = useState("with_date");
+  const [timeType, setTimeType] = useState("");
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= dayjs().endOf("day");
   };
+
+  useEffect(() => {
+    setRecurringForm(formData);
+    if (formData.timeType) {
+      setTimeType(formData.timeType);
+    }
+    form.setFieldsValue(formData);
+  }, [form, formData]);
 
   const absoluteTimeComponent = (
     <Select
@@ -89,7 +100,11 @@ const WebbRecurringForm = (props: SelfProps) => {
 
   return (
     <Card
-      title={<h1 className="text-black">Create Recurring Rule</h1>}
+      title={
+        <h1 className="text-black">
+          {isUpdate ? "Update Recurring Rule" : "Create Recurring Rule"}
+        </h1>
+      }
       className="w-2/3 m-8"
     >
       <Form
@@ -100,7 +115,11 @@ const WebbRecurringForm = (props: SelfProps) => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
-          const res = handleSubmitData("recurring", formType.fileName, values);
+          const res = handleSubmitData(
+            "schedule-recurring",
+            recurringForm.fileName,
+            values
+          );
           console.log("res: ", res);
           res
             .then((res) => {
@@ -133,8 +152,15 @@ const WebbRecurringForm = (props: SelfProps) => {
         >
           <Input
             style={{ width: 360 }}
-            placeholder="enter the file name end with .yml"
+            placeholder="enter the file name"
             disabled={isUpdate}
+            addonAfter=".yml"
+            onBlur={(e: any) => {
+              setRecurringForm({
+                ...recurringForm,
+                fileName: `${e.target.value}`,
+              });
+            }}
           ></Input>
         </Form.Item>
         <Form.Item
@@ -146,7 +172,7 @@ const WebbRecurringForm = (props: SelfProps) => {
             placeholder="Select source type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, webbSourceType: value });
+              setRecurringForm({ ...recurringForm, webbSourceType: value });
             }}
           >
             <Option value="splunk">Splunk</Option>
@@ -162,7 +188,7 @@ const WebbRecurringForm = (props: SelfProps) => {
             placeholder="Select a task type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, taskType: value });
+              setRecurringForm({ ...recurringForm, taskType: value });
             }}
           >
             <Option value="upmIdBlack">UpmId</Option>
@@ -181,7 +207,7 @@ const WebbRecurringForm = (props: SelfProps) => {
             placeholder="Select data search type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, dateSearchType: value });
+              setRecurringForm({ ...recurringForm, dateSearchType: value });
             }}
           >
             <Option value="relative">Relative</Option>
@@ -190,15 +216,15 @@ const WebbRecurringForm = (props: SelfProps) => {
         </Form.Item>
         <Form.Item
           label={
-            formType.dateSearchType == "relative"
-              ? "Scheduled Interval"
+            recurringForm.dateSearchType == "relative"
+              ? "Schedule Intervals"
               : "Trigger Time"
           }
-          name="scheduledInterval"
+          name="scheduleIntervals"
           rules={[{ required: true, message: "required" }]}
         >
           <Space>
-            <Form.Item name="scheduledInterval" noStyle>
+            <Form.Item name="scheduleIntervals" noStyle>
               <Input
                 style={{ width: 360 }}
                 placeholder="Use Rate or Cron Expression"
@@ -214,6 +240,16 @@ const WebbRecurringForm = (props: SelfProps) => {
             </Tooltip>
           </Space>
         </Form.Item>
+        {recurringForm.dateSearchType === "absolute" && (
+          <Form.Item
+            label="Select Time Type"
+            rules={[{ required: true }]}
+            name="timeType"
+          >
+            {absoluteTimeComponent}
+          </Form.Item>
+        )}
+
         <Form.Item>
           <Form.List name="spl_config">
             {(fields, { add, remove }) => (
@@ -238,25 +274,16 @@ const WebbRecurringForm = (props: SelfProps) => {
                       />
                     }
                   >
-                    <Form.Item
-                      label={
-                        formType.dateSearchType === "relative"
-                          ? "Search Past"
-                          : "Select Time Type"
-                      }
-                      rules={[{ required: true }]}
-                      name={[
-                        field.name,
-                        formType.dateSearchType === "relative"
-                          ? "searchTimeRange"
-                          : "timeType",
-                      ]}
-                    >
-                      {formType.dateSearchType === "relative"
-                        ? relativeTimeComponent
-                        : absoluteTimeComponent}
-                    </Form.Item>
-                    {formType.dateSearchType === "absolute" &&
+                    {recurringForm.dateSearchType === "relative" && (
+                      <Form.Item
+                        label="Search Past"
+                        rules={[{ required: true }]}
+                        name={[field.name, "searchTimeRange"]}
+                      >
+                        {relativeTimeComponent}
+                      </Form.Item>
+                    )}
+                    {recurringForm.dateSearchType === "absolute" &&
                       timeType === "with_date" && (
                         <Form.Item
                           label={"Search Time Range"}
@@ -286,7 +313,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                           </Space>
                         </Form.Item>
                       )}
-                    {formType.dateSearchType === "absolute" &&
+                    {recurringForm.dateSearchType === "absolute" &&
                       timeType === "without_date" && (
                         <Form.Item
                           label={"Search Time Range"}
@@ -294,10 +321,16 @@ const WebbRecurringForm = (props: SelfProps) => {
                         >
                           <Space wrap>
                             <Form.Item name={[field.name, "searchStartTime"]}>
-                              <TimePicker placeholder="Start Time" />
+                              <TimePicker
+                                placeholder="Start Time"
+                                format="HH:mm:ss"
+                              />
                             </Form.Item>
                             <Form.Item name={[field.name, "searchEndTime"]}>
-                              <TimePicker placeholder="End Time" />
+                              <TimePicker
+                                placeholder="End Time"
+                                format="HH:mm:ss"
+                              />
                             </Form.Item>
                           </Space>
                         </Form.Item>
@@ -307,22 +340,10 @@ const WebbRecurringForm = (props: SelfProps) => {
                       name={[field.name, "ruleId"]}
                       rules={[{ required: true, message: "required" }]}
                     >
-                      <Space>
-                        <Form.Item name="ruleId" noStyle>
-                          <Input
-                            style={{ width: 400 }}
-                            placeholder="Enter the ruleId corresponding to the splunk query below"
-                          ></Input>
-                        </Form.Item>
-                        <Tooltip title="Webb Rule Cheat Sheet">
-                          <Typography.Link
-                            href="https://confluence.nike.com/pages/viewpage.action?pageId=825536585"
-                            target="_blank"
-                          >
-                            Not Sure Which Rule to Use?
-                          </Typography.Link>
-                        </Tooltip>
-                      </Space>
+                      <Input
+                        style={{ width: 400 }}
+                        placeholder="Enter the ruleId corresponding to the splunk query below"
+                      ></Input>
                     </Form.Item>
                     <Form.Item
                       label="Splunk Query"
@@ -390,7 +411,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                         </Option>
                       </Select>
                     </Form.Item>
-                    {formType.webbSourceType === "ali-sls" && (
+                    {recurringForm.webbSourceType === "ali-sls" && (
                       <Form.Item
                         label="Ali SLS project"
                         rules={[{ required: true }]}
@@ -399,7 +420,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                         <Input placeholder="Ali SLS project" />
                       </Form.Item>
                     )}
-                    {formType.webbSourceType === "ali-sls" && (
+                    {recurringForm.webbSourceType === "ali-sls" && (
                       <Form.Item
                         label="Ali SLS logstore"
                         rules={[{ required: true }]}
@@ -418,6 +439,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
                   onOk={() => setShowModal(false)}
+                  maskClosable={false}
                 >
                   <SubmitResult
                     statusCode={submitStatus.statusCode}
@@ -456,6 +478,7 @@ const WebbRecurringForm = (props: SelfProps) => {
           )}
         </Form.Item>
       </Form>
+      <FloatButton.BackTop />
     </Card>
   );
 };

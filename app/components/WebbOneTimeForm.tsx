@@ -10,8 +10,9 @@ import {
   Input,
   Tooltip,
   Modal,
+  FloatButton,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { RocketOutlined } from "@ant-design/icons";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -20,24 +21,29 @@ import { RangePickerProps } from "antd/es/date-picker";
 import moment from "moment";
 import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
+import { SubmitStatus, WebbFormData } from "@/type";
 
 type SelfProps = {
   isUpdate: boolean;
+  formData: WebbFormData;
 };
 
 const WebbOneTimeForm = (props: SelfProps) => {
-  const { isUpdate } = props;
+  const { isUpdate, formData } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
   const { RangePicker } = DatePicker;
   dayjs.extend(customParseFormat);
 
-  const [formType, setFormType] = useState<FormType>({
+  const [formType, setFormType] = useState<string>("oneTime");
+
+  const [oneTimeForm, setOneTimeForm] = useState<WebbFormData>({
     fileName: "",
     webbSourceType: "",
-    formType: "oneTime",
     taskType: "",
     dateSearchType: "absolute",
+    scheduleIntervals: "",
+    spl_config: [],
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -69,9 +75,18 @@ const WebbOneTimeForm = (props: SelfProps) => {
     }, 6000);
   };
 
+  useEffect(() => {
+    setOneTimeForm(formData);
+    form.setFieldsValue(formData);
+  }, [form, formData]);
+
   return (
     <Card
-      title={<h1 className="text-black">Create OneTime Rule</h1>}
+      title={
+        <h1 className="text-black">
+          {isUpdate ? "Update OneTime Rule" : "Create OneTime Rule"}
+        </h1>
+      }
       className="w-2/3 m-8"
     >
       <Form
@@ -82,7 +97,11 @@ const WebbOneTimeForm = (props: SelfProps) => {
         className="w-full"
         onFinish={(values) => {
           console.log("values: ", values);
-          const res = handleSubmitData("oneTime", formType.fileName, values);
+          const res = handleSubmitData(
+            "schedule-onetime",
+            oneTimeForm.fileName,
+            values
+          );
           console.log("res: ", res);
           res
             .then((res) => {
@@ -105,7 +124,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             });
           setTimeout(() => {
             setShowModal(true);
-          }, 3000);
+          }, 5000);
         }}
       >
         <Form.Item
@@ -115,8 +134,12 @@ const WebbOneTimeForm = (props: SelfProps) => {
         >
           <Input
             style={{ width: 360 }}
-            placeholder="enter the file name end with .yml"
+            placeholder="enter the file name"
             disabled={isUpdate}
+            addonAfter=".yml"
+            onBlur={(e: any) => {
+              setOneTimeForm({ ...oneTimeForm, fileName: `${e.target.value}` });
+            }}
           ></Input>
         </Form.Item>
         <Form.Item
@@ -128,7 +151,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             placeholder="Select source type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, webbSourceType: value });
+              setOneTimeForm({ ...oneTimeForm, webbSourceType: value });
             }}
           >
             <Option value="splunk">Splunk</Option>
@@ -144,7 +167,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             placeholder="Select a task type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, taskType: value });
+              setOneTimeForm({ ...oneTimeForm, taskType: value });
             }}
           >
             <Option value="upmIdBlack">UpmId</Option>
@@ -163,7 +186,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             placeholder="Select data search type"
             allowClear
             onChange={(value: any) => {
-              setFormType({ ...formType, dateSearchType: value });
+              setOneTimeForm({ ...oneTimeForm, dateSearchType: value });
             }}
           >
             <Option value="relative">Relative</Option>
@@ -172,15 +195,15 @@ const WebbOneTimeForm = (props: SelfProps) => {
         </Form.Item>
         <Form.Item
           label={
-            formType.dateSearchType == "relative"
-              ? "Scheduled Interval"
+            oneTimeForm.dateSearchType == "relative"
+              ? "Schedule Intervals"
               : "Trigger Time"
           }
-          name="scheduledInterval"
+          name="scheduleIntervals"
           rules={[{ required: true, message: "required" }]}
         >
           <Space>
-            <Form.Item name="scheduledInterval" noStyle>
+            <Form.Item name="scheduleIntervals" noStyle>
               <Input
                 style={{ width: 360 }}
                 placeholder="Use Rate or Cron Expression"
@@ -220,7 +243,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                       />
                     }
                   >
-                    {formType.dateSearchType === "absolute" && (
+                    {oneTimeForm.dateSearchType === "absolute" && (
                       <Form.Item
                         label={"Search Time Range"}
                         rules={[{ required: true }]}
@@ -243,7 +266,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         </Space>
                       </Form.Item>
                     )}
-                    {formType.dateSearchType === "relative" && (
+                    {oneTimeForm.dateSearchType === "relative" && (
                       <Form.Item
                         label={"Search Past"}
                         rules={[{ required: true }]}
@@ -257,22 +280,10 @@ const WebbOneTimeForm = (props: SelfProps) => {
                       name={[field.name, "ruleId"]}
                       rules={[{ required: true, message: "required" }]}
                     >
-                      <Space>
-                        <Form.Item name="ruleId" noStyle>
-                          <Input
-                            style={{ width: 400 }}
-                            placeholder="Enter the ruleId corresponding to the splunk query below"
-                          ></Input>
-                        </Form.Item>
-                        <Tooltip title="Webb Rule Cheat Sheet">
-                          <Typography.Link
-                            href="https://confluence.nike.com/pages/viewpage.action?pageId=825536585"
-                            target="_blank"
-                          >
-                            Not Sure Which Rule to Use?
-                          </Typography.Link>
-                        </Tooltip>
-                      </Space>
+                      <Input
+                        style={{ width: 400 }}
+                        placeholder="Enter the ruleId corresponding to the splunk query below"
+                      ></Input>
                     </Form.Item>
                     <Form.Item
                       label="Splunk Query"
@@ -336,7 +347,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         </Option>
                       </Select>
                     </Form.Item>
-                    {formType.webbSourceType === "ali-sls" && (
+                    {oneTimeForm.webbSourceType === "ali-sls" && (
                       <Form.Item
                         label="Ali SLS project"
                         rules={[{ required: true }]}
@@ -345,7 +356,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         <Input placeholder="Ali SLS project" />
                       </Form.Item>
                     )}
-                    {formType.webbSourceType === "ali-sls" && (
+                    {oneTimeForm.webbSourceType === "ali-sls" && (
                       <Form.Item
                         label="Ali SLS logstore"
                         rules={[{ required: true }]}
@@ -364,6 +375,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
                   onOk={() => setShowModal(false)}
+                  maskClosable={false}
                 >
                   <SubmitResult
                     statusCode={submitStatus.statusCode}
@@ -402,6 +414,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
           )}
         </Form.Item>
       </Form>
+      <FloatButton.BackTop />
     </Card>
   );
 };

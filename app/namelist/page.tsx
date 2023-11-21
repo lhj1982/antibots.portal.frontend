@@ -3,10 +3,11 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import type { InputRef, PaginationProps } from "antd";
-import { Button, Input, Space, Table } from "antd";
+import { Button, FloatButton, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import axios from "axios";
+import { DataType } from "@/type";
 
 type DataIndex = keyof DataType;
 
@@ -39,10 +40,10 @@ const NameList: React.FC = () => {
     setLoading(true);
     let config = {
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('sess')}`,
-        User: `${window.localStorage.getItem('email')}`
-      }
-    }
+        Authorization: `Bearer ${window.localStorage.getItem("sess")}`,
+        User: `${window.localStorage.getItem("email")}`,
+      },
+    };
     try {
       const response = await axios.get(
         `http://localhost:3001/antibotswebb/v1/list?page=${pageNum}&limit=${pageSize}`,
@@ -287,6 +288,7 @@ const NameList: React.FC = () => {
           },
         }}
       />
+      <FloatButton.BackTop />
     </div>
   );
 };

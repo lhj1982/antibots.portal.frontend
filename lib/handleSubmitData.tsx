@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import axios from "axios";
+import { GeneratedSpl } from "@/type";
 
 function generateData(data: any) {
   const {
@@ -7,13 +8,14 @@ function generateData(data: any) {
     dateSearchType,
     taskType,
     spl_config,
-    scheduledInterval,
+    scheduleIntervals,
+    timeType
   } = data;
 
-  let splArr: Array<Spl> = [];
+  let splArr: Array<GeneratedSpl> = [];
 
   spl_config.forEach((item: any) => {
-    let obj: Spl = {} as Spl;
+    let obj: GeneratedSpl = {} as GeneratedSpl;
     obj.enable = true;
     obj.spl = item.spl;
     obj.ruleId = item.ruleId;
@@ -37,7 +39,7 @@ function generateData(data: any) {
     switch (dateSearchType) {
       case "absolute":
         let formatType = "YYYY-MM-DDTHH:mm:ss.SSSZ";
-        if (item.timeType === "without_date") {
+        if (data.timeType === "without_date") {
           formatType = "HH:mm:ss.SSSZ";
         }
         obj.override_setting.dateSearchType = "absolute";
@@ -87,7 +89,7 @@ function generateData(data: any) {
                                   "timeInMinutes": 15
                                 }
                           },
-                          "scheduleIntervals": "${scheduledInterval}",
+                          "scheduleIntervals": "${scheduleIntervals}",
                           "schedule" : ${splStr}
                       }
                   }
