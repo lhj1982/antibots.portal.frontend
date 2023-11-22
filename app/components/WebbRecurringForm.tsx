@@ -22,6 +22,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
+import SubmitButton from "./SubmitButton";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -79,24 +80,6 @@ const WebbRecurringForm = (props: SelfProps) => {
   );
 
   const relativeTimeComponent = <InputNumber addonAfter="Minutes" min={0} />;
-
-  // submit loading button
-  const [loadings, setLoadings] = useState<boolean[]>([]);
-  const enterLoading = (index: number) => {
-    setLoadings((prevLoadings) => {
-      const newLoadings = [...prevLoadings];
-      newLoadings[index] = true;
-      return newLoadings;
-    });
-
-    setTimeout(() => {
-      setLoadings((prevLoadings) => {
-        const newLoadings = [...prevLoadings];
-        newLoadings[index] = false;
-        return newLoadings;
-      });
-    }, 6000);
-  };
 
   return (
     <Card
@@ -456,19 +439,7 @@ const WebbRecurringForm = (props: SelfProps) => {
             sm: { span: 16, offset: 10 },
           }}
         >
-          <Button
-            type="primary"
-            shape="round"
-            icon={<RocketOutlined />}
-            size="large"
-            loading={loadings[1]}
-            onClick={() => {
-              enterLoading(1);
-              form.submit();
-            }}
-          >
-            Submit
-          </Button>
+          <SubmitButton form={form} />
         </Form.Item>
         <Form.Item noStyle shouldUpdate>
           {() => (

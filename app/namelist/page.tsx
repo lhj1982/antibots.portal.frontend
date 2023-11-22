@@ -61,14 +61,7 @@ const NameList: React.FC = () => {
 
   useEffect(() => {
     fetchPageData(1, pageSize);
-    // // 加载第一页的数据
-    // setAllData(initialResponse.data.items);
-
-    // // 循环加载后面的页面数据
-    // for (let page = 2; page <= totalPages; page++) {
-    //   await loadPageData(page);
-    // }
-  }, []);
+  }, [pageSize]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -288,7 +281,7 @@ const NameList: React.FC = () => {
           },
         }}
       />
-      <FloatButton.BackTop />
+      <FloatButton.BackTop type= "primary"/>
     </div>
   );
 };

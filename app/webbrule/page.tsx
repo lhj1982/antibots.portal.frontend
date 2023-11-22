@@ -14,7 +14,16 @@ export default function WebbRule() {
     taskType: "",
     dateSearchType: "",
     scheduleIntervals: "",
-    spl_config: [],
+    spl_config: [
+      {
+        ruleId: "",
+        spl: "",
+        ttl: 0,
+        destination: [],
+        action: "",
+        nameSpace: "",
+      }
+    ],
   });
 
   function handleSetDefaultFormType(isRecurring: boolean) {

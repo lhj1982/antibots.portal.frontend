@@ -63,7 +63,7 @@ const WebbRuleDetail = ({ params: { file } }: Params) => {
 
   useEffect(() => {
     getData(fileName);
-  }, []);
+  }, [fileName]);
 
   const updateForm =
     formType === "schedule-onetime" ? (

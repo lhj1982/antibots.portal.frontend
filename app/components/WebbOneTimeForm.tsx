@@ -22,6 +22,7 @@ import moment from "moment";
 import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
+import SubmitButton from "./SubmitButton";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -36,7 +37,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
   dayjs.extend(customParseFormat);
 
   const [formType, setFormType] = useState<string>("oneTime");
-
+  const [submittable, setSubmittable] = useState(false);
   const [oneTimeForm, setOneTimeForm] = useState<WebbFormData>({
     fileName: "",
     webbSourceType: "",
@@ -57,23 +58,6 @@ const WebbOneTimeForm = (props: SelfProps) => {
     return current && current >= moment().endOf("day");
   };
 
-  // submit loading button
-  const [loadings, setLoadings] = useState<boolean[]>([]);
-  const enterLoading = (index: number) => {
-    setLoadings((prevLoadings) => {
-      const newLoadings = [...prevLoadings];
-      newLoadings[index] = true;
-      return newLoadings;
-    });
-
-    setTimeout(() => {
-      setLoadings((prevLoadings) => {
-        const newLoadings = [...prevLoadings];
-        newLoadings[index] = false;
-        return newLoadings;
-      });
-    }, 6000);
-  };
 
   useEffect(() => {
     setOneTimeForm(formData);
@@ -392,19 +376,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             sm: { span: 16, offset: 10 },
           }}
         >
-          <Button
-            type="primary"
-            shape="round"
-            icon={<RocketOutlined />}
-            size="large"
-            loading={loadings[1]}
-            onClick={() => {
-              enterLoading(1);
-              form.submit();
-            }}
-          >
-            Submit
-          </Button>
+          <SubmitButton form={form} />
         </Form.Item>
         <Form.Item noStyle shouldUpdate>
           {() => (
