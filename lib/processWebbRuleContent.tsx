@@ -99,17 +99,10 @@ export function generateFormData(
       !generatedSpl.override_setting.absoluteDate.stopDatetime.includes("T")
     ) {
       webbFormData.timeType = "without_date";
-      console.log("Time With Out Date");
-      console.log("!@#@!#@!: ", dayjs("05:00:00", "HH:mm:ss"));
-      console.log(
-        "FDGFDGFDGDFFSDDS: ",
-        generatedSpl.override_setting.absoluteDate.startDatetime
-      );
       rawSpl.searchStartTime = dayjs(
         generatedSpl.override_setting.absoluteDate.startDatetime.split(".")[0],
         "HH:mm:ss"
       );
-      console.log("ASDASDASDADASDSDSAD: ", rawSpl.searchStartTime);
       rawSpl.searchEndTime = dayjs(
         generatedSpl.override_setting.absoluteDate.stopDatetime.split(".")[0],
         "HH:mm:ss"
