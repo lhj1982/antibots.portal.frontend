@@ -14,7 +14,6 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { RocketOutlined } from "@ant-design/icons";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CloseOutlined } from "@ant-design/icons";
 import { RangePickerProps } from "antd/es/date-picker";
@@ -36,8 +35,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
   const { RangePicker } = DatePicker;
   dayjs.extend(customParseFormat);
 
-  const [formType, setFormType] = useState<string>("oneTime");
-  const [submittable, setSubmittable] = useState(false);
+  // const [formType, setFormType] = useState<string>("oneTime");
   const [oneTimeForm, setOneTimeForm] = useState<WebbFormData>({
     fileName: "",
     webbSourceType: "",
@@ -57,7 +55,6 @@ const WebbOneTimeForm = (props: SelfProps) => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= moment().endOf("day");
   };
-
 
   useEffect(() => {
     setOneTimeForm(formData);
@@ -82,13 +79,14 @@ const WebbOneTimeForm = (props: SelfProps) => {
         onFinish={(values) => {
           console.log("values: ", values);
           const res = handleSubmitData(
-            "schedule-onetime",
+            "schedule-onetime", // path
             oneTimeForm.fileName,
             values
           );
           console.log("res: ", res);
           res
             .then((res) => {
+              console.log(res);
               console.log(res.status);
               console.log(res.data.message);
               setSubmitStatus({

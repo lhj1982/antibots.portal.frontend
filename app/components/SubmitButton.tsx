@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { RocketOutlined } from "@ant-design/icons";
 
 const SubmitButton = ({ form }: { form: FormInstance }) => {
-  const [submittable, setSubmittable] = React.useState(false);
+  const [submittable, setSubmittable] = useState(false);
   const [loadings, setLoadings] = useState<boolean[]>([]);
-  
+
   const enterLoading = (index: number) => {
     setLoadings((prevLoadings) => {
       const newLoadings = [...prevLoadings];
@@ -18,41 +18,44 @@ const SubmitButton = ({ form }: { form: FormInstance }) => {
         newLoadings[index] = false;
         return newLoadings;
       });
+      setSubmittable(true);
     }, 6000);
   };
 
-    // Watch all values
-    const values = Form.useWatch([], form);
+  // Watch all values
+  const values = Form.useWatch([], form);
 
-    useEffect(() => {
-      form.validateFields({ validateOnly: true }).then(
-        () => {
-          setSubmittable(true);
-        },
-        () => {
-          setSubmittable(false);
-        }
-      );
-    }, [form, values]);
-
-    return (
-      <Button
-        type="primary"
-        htmlType="submit"
-        disabled={!submittable}
-        shape="round"
-        icon={<RocketOutlined />}
-        size="large"
-        onClick={() => {
-          enterLoading(1);
-          form.submit();
-        }}
-        loading={loadings[1]}
-      >
-        Submit
-      </Button>
+  useEffect(() => {
+    form.validateFields({ validateOnly: true }).then(
+      () => {
+        setSubmittable(true);
+      },
+      () => {
+        setSubmittable(false);
+      }
     );
-  };
+  }, [form, values]);
 
+  return (
+    <Button
+      type="primary"
+      htmlType="submit"
+      disabled={!submittable}
+      shape="round"
+      icon={<RocketOutlined />}
+      size="large"
+      onClick={(e)=> {
+        e.stopPropagation();
+        e.preventDefault();
+        setSubmittable(false);
+        enterLoading(1);
+        form.submit();
+      }}
+      loading={loadings[1]}
+    >
+      Submit
+    </Button>
+  );
+};
 
 export default SubmitButton;

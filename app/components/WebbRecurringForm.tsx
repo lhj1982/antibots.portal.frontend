@@ -15,7 +15,6 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { RocketOutlined } from "@ant-design/icons";
 import type { RangePickerProps } from "antd/es/date-picker";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CloseOutlined } from "@ant-design/icons";
@@ -36,7 +35,7 @@ const WebbRecurringForm = (props: SelfProps) => {
   const { RangePicker } = DatePicker;
   dayjs.extend(customParseFormat);
 
-  const [formType, setFormType] = useState("recurring");
+  // const [formType, setFormType] = useState("recurring");
   const [recurringForm, setRecurringForm] = useState<WebbFormData>({
     fileName: "",
     webbSourceType: "",
@@ -99,7 +98,7 @@ const WebbRecurringForm = (props: SelfProps) => {
         onFinish={(values) => {
           console.log("values: ", values);
           const res = handleSubmitData(
-            "schedule-recurring",
+            "schedule-recurring", // path
             recurringForm.fileName,
             values
           );
