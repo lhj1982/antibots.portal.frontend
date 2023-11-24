@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import OktaJwtVerifier from "@okta/jwt-verifier";
 import { OKTA_ISSUER, OKTA_AUD } from "@/utils/constants";
+import { AuthVerifyResponse } from "@/type";
 
 type ReqBody = {
   data?: {

@@ -5,6 +5,7 @@ import {
   OKTA_REDIRECT_URI,
   CODE_VERIFIER_KEY,
 } from "@/utils/constants";
+import { AuthVerifyResponse } from "@/type";
 
 const SESSIONKEY = "sess";
 
