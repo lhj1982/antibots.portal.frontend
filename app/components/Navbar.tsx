@@ -39,14 +39,14 @@ function stringAvatar(name: string) {
 export default function NavBar() {
   const [user, setUser] = useState("H i");
   const [email, setEmail] = useState("");
-  
-  if (typeof window !== "undefined"){
+
+  if (typeof window !== "undefined") {
     setTimeout(function () {
-        setUser(window.localStorage.getItem("username") as string);
-        setEmail(window.localStorage.getItem("email") as string);
-      }, 2000);
+      setUser(window.localStorage.getItem("username") as string);
+      setEmail(window.localStorage.getItem("email") as string);
+    }, 2000);
   }
-  
+
   return (
     <nav className="bg-light-black p-1 sticky top-0 drop-shadow-xl z-10">
       <div className="flex items-center justify-between  sm:flex-row mx-12">

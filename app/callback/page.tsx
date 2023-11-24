@@ -58,36 +58,28 @@ export default function CallbackPage() {
         console.log(body);
 
         if (body.access_token !== undefined && body.id_token !== undefined) {
-
           const decodeIdToken = jwt.decode(body.id_token);
 
           console.log("asdasdasda", decodeIdToken);
-          console.log(typeof decodeIdToken === "object" );
+          console.log(typeof decodeIdToken === "object");
 
-          if(typeof decodeIdToken && typeof decodeIdToken === "object" ){
-
-            window.localStorage.setItem(
-              "username",
-               decodeIdToken?.name
-            );
-          }else{
-            window.localStorage.setItem(
-              "username", "H i"
-            );
+          if (typeof decodeIdToken && typeof decodeIdToken === "object") {
+            window.localStorage.setItem("username", decodeIdToken?.name);
+          } else {
+            window.localStorage.setItem("username", "H i");
           }
 
           const decodeAccessToken = jwt.decode(body.access_token);
-          if(typeof decodeAccessToken || typeof decodeAccessToken === "object"){
-
+          if (
+            typeof decodeAccessToken ||
+            typeof decodeAccessToken === "object"
+          ) {
             window.localStorage.setItem(
               "email",
               decodeAccessToken?.sub as string
             );
-            
-          }else{
-            window.localStorage.setItem(
-              "email", "User@nike.com"
-            );
+          } else {
+            window.localStorage.setItem("email", "User@nike.com");
           }
           setSession(body.access_token);
           router.replace("/");
