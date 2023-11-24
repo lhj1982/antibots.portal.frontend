@@ -10,7 +10,6 @@ import {
   CODE_VERIFIER_KEY,
 } from "@/utils/constants";
 import jwt from "jsonwebtoken";
-import { AccessToken, IdToken } from "@/type";
 
 type TokenResponse = {
   access_token?: string;
