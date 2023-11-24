@@ -60,26 +60,33 @@ export default function CallbackPage() {
         if (body.access_token !== undefined && body.id_token !== undefined) {
 
           const decodeIdToken = jwt.decode(body.id_token);
-          if(typeof decodeIdToken || typeof decodeIdToken === "string"){
-            localStorage.setItem(
-              "username", "H i"
-            );
-          }else if(decodeIdToken !== null){
-            localStorage.setItem(
+
+          console.log("asdasdasda", decodeIdToken);
+          console.log(typeof decodeIdToken === "object" );
+
+          if(typeof decodeIdToken && typeof decodeIdToken === "object" ){
+
+            window.localStorage.setItem(
               "username",
-               decodeIdToken.name
+               decodeIdToken?.name
+            );
+          }else{
+            window.localStorage.setItem(
+              "username", "H i"
             );
           }
 
           const decodeAccessToken = jwt.decode(body.access_token);
-          if(typeof decodeAccessToken || typeof decodeAccessToken === "string"){
-            localStorage.setItem(
-              "email", "User@nike.com"
-            );
-          }else if(typeof decodeAccessToken === 'object' && decodeAccessToken !== null){
-            localStorage.setItem(
+          if(typeof decodeAccessToken || typeof decodeAccessToken === "object"){
+
+            window.localStorage.setItem(
               "email",
-              decodeAccessToken.sub === undefined ? "User@nike.com" :  decodeAccessToken.sub
+              decodeAccessToken?.sub as string
+            );
+            
+          }else{
+            window.localStorage.setItem(
+              "email", "User@nike.com"
             );
           }
           setSession(body.access_token);
