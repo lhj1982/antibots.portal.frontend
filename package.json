@@ -33,7 +33,7 @@
     "utf-8-validate": "^6.0.3"
   },
   "devDependencies": {
-    "@types/node": "latest",
+    "@types/node": "^20.10.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/react-highlight-words": "^0.16.5",
