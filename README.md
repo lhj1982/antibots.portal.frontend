@@ -41,3 +41,12 @@ docker build -t antibots.portal.frontend.test -f Dockerfile.test .
 docker run -p 3000:3000 -d antibots.portal.frontend.test:latest
 
 # Upload to ECR
+aws ecr get-login-password --region cn-northwest-1 | docker login --username AWS --password-stdin 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn
+
+docker build -t webb-portal-ui -f Dockerfile.test .
+
+git_version=`git rev-parse --short HEAD`
+
+docker tag webb-portal-ui 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-ui:${git_version}
+
+docker push 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-ui:${git_version}
