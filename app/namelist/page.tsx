@@ -8,6 +8,7 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import axios from "axios";
 import { DataType } from "@/type";
+import { BACKEND_HOST, NAMELIST_PATH } from "@/utils/constants";
 
 type DataIndex = keyof DataType;
 
@@ -46,7 +47,8 @@ const NameList: React.FC = () => {
     };
     try {
       const response = await axios.get(
-        `http://localhost:3001/antibotswebb/v1/list?page=${pageNum}&limit=${pageSize}`,
+        // `http://localhost:3001/antibotswebb/v1/list?page=${pageNum}&limit=${pageSize}`,
+        `${BACKEND_HOST}/${NAMELIST_PATH}?page=${pageNum}&limit=${pageSize}`,
         config
       );
       const { items, totalItems, page } = response.data.data;

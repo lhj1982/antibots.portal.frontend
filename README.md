@@ -47,6 +47,23 @@ docker build -t webb-portal-ui -f Dockerfile.test .
 
 git_version=`git rev-parse --short HEAD`
 
-docker tag webb-portal-ui 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-ui:${git_version}
+docker tag webb-portal-ui 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-frontend-task:${git_version}
 
-docker push 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-ui:${git_version}
+docker push 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-frontend-task:${git_version}
+
+# Resource Stack
+- aws --region cn-northwest-1 --profile default \
+  cloudformation deploy \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --template-file deployment/cloudformation/antibots.portal.frontend.resources.yaml\
+  --stack-name antibots-portal-frontend-resources \
+  --parameter-overrides Env=test
+
+# sam template：
+- git_version=`git rev-parse --short HEAD`
+- aws --region cn-northwest-1 --profile default \
+  cloudformation deploy \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --template-file deployment/cloudformation/sam-template.yaml \
+  --stack-name antibots-webb-portal-frontend-task \
+  --parameter-overrides "Env=test" "ImageVersion=${git_version}"

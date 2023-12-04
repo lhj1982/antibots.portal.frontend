@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import axios from "axios";
 import { GeneratedSpl } from "@/type";
+import { BACKEND_HOST, WEBBRULE_UPLOAD_PATH } from "@/utils/constants";
 
 function generateData(data: any) {
   const {
@@ -9,7 +10,7 @@ function generateData(data: any) {
     taskType,
     spl_config,
     scheduleIntervals,
-    timeType
+    timeType,
   } = data;
 
   let splArr: Array<GeneratedSpl> = [];
@@ -104,13 +105,18 @@ export default async function handleSubmitData(
 ) {
   const generatedData = generateData(data);
   console.log("Generated Data: ", generatedData);
-  const response = await axios.post("http://localhost:3001/antibotswebb/v1/upload", generatedData, {
-    headers: { 
-        "Authorization": `Bearer ${window.localStorage.getItem('sess')}`,
-        "FileName": fileName, 
+  // http://localhost:3001/antibotswebb/v1/upload
+  const response = await axios.post(
+    `${BACKEND_HOST}/${WEBBRULE_UPLOAD_PATH}`,
+    generatedData,
+    {
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem("sess")}`,
+        FileName: fileName,
         "Search-Type": searchType,
-        "User": `${window.localStorage.getItem('email')}`
-    },
-  });
+        User: `${window.localStorage.getItem("email")}`,
+      },
+    }
+  );
   return response;
 }
