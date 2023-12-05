@@ -1,0 +1,67 @@
+@Library('cicd-pipeline') _
+
+def config = [
+        usePraDispatch: false,
+        buildFlow: [
+            PULL_REQUEST    : ['Build', 'Quality Gate'],
+            DEVELOPMENT     : ['Build', 'Containerize'],
+            RELEASE         : ['Build', 'Containerize']
+        ],
+        branchMatcher: [ RELEASE: ['master'], DEVELOPMENT: ['^(?!master$).*$']],
+        tags: [
+            'Name': 'webb-portal-frontend',
+            'costcenter': '161961',
+            'classification': 'sliver',
+            'email': 'Lst-gc-cdn-antibots.admin@nike.com',
+            'owner': 'gc-cdn-antibots',
+            'nike-department': 'platform engineering - gc launch',
+            'nike-domain': 'gc-cdn-antibots',
+            'nike-application': 'webb-portal-frontend',
+        ],
+        container: [
+                name: 'webb-portal-frontend',
+                group: 'gcantibots',
+                dockerFileName: 'Dockerfile.test',
+        ],
+        notify: [
+            slack: [
+                channel: "#cicd-deploy",
+                onCondition: ['any']
+            ]
+        ],
+        deploymentEnvironment : [
+            test : [
+                deployFlow: [
+                        DEVELOPMENT : ["Publish To ECR", "Deploy"],
+                        RELEASE     : ["Publish To ECR", "Deploy"],
+                ],
+                cloudEnvironment: "test",
+                deploy: [
+                    awsRole: "arn:aws-cn:iam::439314357471:role/gcantibots-BrewmasterEcsRole",
+                    // ecrRole: "cop-pipeline-EcrPushRole", // Optional: If you need to use a different role for pushing docker container to ECR. When not provided, awsRole is used.
+                    accountId: "439314357471",
+                    // cfAssumeRole: "aws::arn::123456789::role/myCfPermissionsRole",	//	Optional. AWS IAM Role which should be passed on to Cloudformation. This allows AWS CloudFormation to make calls to resources in a stack on your behalf.
+                    region: "cn-northwest-1",
+                    clusterName: "webb-portal-frontend-cluster-test",
+                    securityGroups: "sg-0676976675a94e49e",
+                    subnets: ["subnet-075e204cb71470d70", "subnet-0e64f859c59876536", "subnet-0f02dd76225273efa"],
+                    taskExecutionRoleArn: "arn:aws:iam::123456789:role/myapp-TaskExecutionRole",
+                    vpcId: "vpc-0f9779e69a780c25e",
+                    taskCpu: 1024,
+                    appContainerCpu: 1024,
+                    taskMemory: 2048,
+                    appContainerMemory: 2048,
+                    healthCheckPath: '/health-check',
+                    containerPort: '3000',
+                    listenerArn : 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:listener/app/webbFrontendALB/8f0f6089103b9adb/fca23985f6dcdd6f',
+                    listenerRulePriority : 2,
+                    containerDesiredCount: 1,
+                    ],
+                ],
+                tags: [
+                    'nike-environment': 'test'
+                ],
+            ], 
+        ],       
+
+ecsDeployPipeline(config)
