@@ -9,7 +9,7 @@ def config = [
             DEVELOPMENT     : ['Build', 'Containerize'],
             RELEASE         : ['Build', 'Containerize']
         ],
-        branchMatcher: [ RELEASE: ['master'], DEVELOPMENT: ['^(?!master$).*$']],
+        branchMatcher: [ RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
         tags: [
             'Name': 'webb-portal-frontend',
             'costcenter': '161961',
