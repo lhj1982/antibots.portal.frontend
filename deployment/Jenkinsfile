@@ -1,4 +1,6 @@
-@Library('cicd-pipeline') _
+@Library(['cop-pipeline-bootstrap']) _
+String pipelineVersion = (env.BRANCH_NAME && !(env.BRANCH_NAME).equals('main') && !(env.BRANCH_NAME).contains('PR-')) ? env.BRANCH_NAME : 'regression/candidate'
+loadPipelines(pipelineVersion)
 
 def config = [
         usePraDispatch: false,
