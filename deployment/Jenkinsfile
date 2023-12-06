@@ -33,6 +33,8 @@ def config = [
         'nike-department': 'platform engineering - gc launch',
         'nike-domain': 'gc-cdn-antibots',
         'nike-application': 'webb-portal-frontend',
+        'nike-distributionlist': 'Lst-gc-cdn-antibots.admin@nike.com',
+        'nike-owner': 'frank.zhao@nike.com',
     ],
     // qma: [
     //     configFile: 'quality-config.yaml'
