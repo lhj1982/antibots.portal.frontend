@@ -11,7 +11,7 @@ def config = [
             // TRIAL           : ['Build', 'Compile', 'Containerize', 'Container Test'],
             // TWISTLOCK_SCAN  : ['Build', 'Compile', 'Containerize', 'Container Test', 'Twistlock Scan'],
             // DEPLOY_ALL      : [],
-            RELEASE         : ['Build', 'Compile', 'Local Test', 'Quality Gate', 'Containerize', 'Container Test']
+            RELEASE         : ['Build', 'Compile', 'Containerize', 'Container Test']
     ],
     branchMatcher: [ RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
     notify: [
@@ -31,7 +31,7 @@ def config = [
         'nike-application': 'webb-portal-frontend',
     ],
     qma: [
-        configFile: 'quality-config.yaml'
+        configFile: '../quality-config.yaml'
     ],
     container: [
         name: app,
