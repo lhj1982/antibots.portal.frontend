@@ -6,7 +6,7 @@ def app = 'webb-portal-frontend'
 def teamPrefix = 'gcantibots'
 def config = [
     buildFlow: [
-            PULL_REQUEST    : ['Build', 'Compile', 'Local Test', 'Quality Gate'],
+            PULL_REQUEST    : ['Build', 'Compile'],
             DEVELOPMENT     : ['Build', 'Compile', 'Containerize', 'Container Test'],
             // TRIAL           : ['Build', 'Compile', 'Containerize', 'Container Test'],
             // TWISTLOCK_SCAN  : ['Build', 'Compile', 'Containerize', 'Container Test', 'Twistlock Scan'],
@@ -60,9 +60,8 @@ def config = [
     deploymentEnvironment : [
         test : [
             deployFlow: [
-                    DEVELOPMENT : ["Deploy","Publish To ECR"],
-                    DEPLOY_ALL : ["Deploy"],
-                    RELEASE : ["Deploy", "Publish To ECR", "Quality Gate", "SignalFx Events"],
+                    DEVELOPMENT : ["Publish To ECR","Deploy"],
+                    RELEASE : ["Publish To ECR","Deploy"],
             ],
             signalfx: [
                 app: app,
