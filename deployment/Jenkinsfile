@@ -29,7 +29,7 @@ def config = [
         'nike-application': 'webb-portal-frontend',
     ],
     qma: [
-        configFile: '../quality-config.yaml'
+        configFile: 'quality-config.yaml'
     ],
     container: [
         name: app,
