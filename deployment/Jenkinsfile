@@ -85,7 +85,7 @@ def config = [
                     clusterName: "webb-portal-frontend-cluster-test",
                     securityGroups: "sg-0676976675a94e49e",
                     subnets: "subnet-075e204cb71470d70, subnet-0e64f859c59876536, subnet-0f02dd76225273efa",
-                    taskExecutionRoleArn: "arn:aws:iam::123456789:role/myapp-TaskExecutionRole",
+                    taskExecutionRoleArn: "arn:aws-cn:iam::439314357471:role/gcantibots-TaskExecutionRole",
                     vpcId: 'vpc-0f9779e69a780c25e',
                     taskCpu: 1024,
                     appContainerCpu: 1024,
