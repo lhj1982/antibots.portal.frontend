@@ -63,6 +63,7 @@ def config = [
     // ],
     deploymentEnvironment : [
         test : [
+            agentLabel: 'china',
             deployFlow: [
                     DEVELOPMENT : ["Publish To ECR","Deploy"],
                     RELEASE : ["Publish To ECR","Deploy"],
