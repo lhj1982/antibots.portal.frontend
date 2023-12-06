@@ -95,6 +95,7 @@ def config = [
                     healthCheckPort: '8077',
                     containerPort: '3000',
                     listenerArn: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:listener/app/webbFrontendALB/8f0f6089103b9adb/fca23985f6dcdd6f',
+                    listenerRulePriority: 1,
                     containerDesiredCount: 1,
                     useSplunkTaskDriver: true,
                     splunkToken: 'e8a2c4e9-2df8-4234-8b3d-b24dc733ce42',
@@ -102,7 +103,7 @@ def config = [
                     splunkUrl: "https://gcsplunk-hec.nike.com:443",
                     splunkFormat: 'json',
                     TargetGroupArn: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:targetgroup/Webb-F-Front-SQVFM2JHAU5P/786eb1657d3fdd21',
-                    ListenerRulePriority: 1,
+                    
                     // pollInterval: 15000,
 //                    If using custom stack name
 //                    stackName: "${teamPrefix}-${app}-${env.BRANCH_NAME}-test",
