@@ -101,6 +101,7 @@ def config = [
                     splunkIndex: "np-anti-bots",
                     splunkUrl: "https://gcsplunk-hec.nike.com:443",
                     splunkFormat: 'json',
+                    TargetGroupArn: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:targetgroup/Webb-F-Front-SQVFM2JHAU5P/786eb1657d3fdd21',
                     // pollInterval: 15000,
 //                    If using custom stack name
 //                    stackName: "${teamPrefix}-${app}-${env.BRANCH_NAME}-test",
