@@ -5,7 +5,7 @@ def teamPrefix = 'gcantibots'
 def config = [
     buildFlow: [
             PULL_REQUEST    : ['Build', 'Compile'],
-            DEVELOPMENT     : ['Build', 'Compile', 'Containerize', 'Container Test'],
+            DEVELOPMENT     : ['Containerize', 'Container Test'],
             // TRIAL           : ['Build', 'Compile', 'Containerize', 'Container Test'],
             // TWISTLOCK_SCAN  : ['Build', 'Compile', 'Containerize', 'Container Test', 'Twistlock Scan'],
             // DEPLOY_ALL      : [],
@@ -18,12 +18,12 @@ def config = [
             onCondition: ['any']
         ]
     ],
-    build: [
-        // image : 'artifactory.nike.com:9002/servegc/cicd-base-nodejs:latest',
-        dockerfile : 'Dockerfile.test',
-        dockerImageName	: teamPrefix + '-' + app,
-        cmd: "echo ${params.dockerImageName}"
-    ],
+    // build: [
+    //     // image : 'artifactory.nike.com:9002/servegc/cicd-base-nodejs:latest',
+    //     dockerfile : 'Dockerfile.test',
+    //     dockerImageName	: teamPrefix + '-' + app,
+    //     cmd: "echo ${params.dockerImageName}"
+    // ],
     tags: [
         'Name': 'webb-portal-frontend',
         'costcenter': '161961',
@@ -34,9 +34,9 @@ def config = [
         'nike-domain': 'gc-cdn-antibots',
         'nike-application': 'webb-portal-frontend',
     ],
-    qma: [
-        configFile: 'quality-config.yaml'
-    ],
+    // qma: [
+    //     configFile: 'quality-config.yaml'
+    // ],
     container: [
         name: app,
         group: teamPrefix,
