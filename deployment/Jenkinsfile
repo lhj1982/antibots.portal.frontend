@@ -18,6 +18,12 @@ def config = [
             onCondition: ['any']
         ]
     ],
+    build: [
+        // image : 'artifactory.nike.com:9002/servegc/cicd-base-nodejs:latest',
+        dockerfile : 'Dockerfile.test',
+        dockerImageName	: teamPrefix + '-' + app,
+        cmd: "echo ${params.dockerImageName}"
+    ],
     tags: [
         'Name': 'webb-portal-frontend',
         'costcenter': '161961',
