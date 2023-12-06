@@ -2,68 +2,141 @@
 String pipelineVersion = (env.BRANCH_NAME && !(env.BRANCH_NAME).equals('main') && !(env.BRANCH_NAME).contains('PR-')) ? env.BRANCH_NAME : 'regression/candidate'
 loadPipelines(pipelineVersion)
 
+def app = 'webb-portal-frontend'
+def teamPrefix = 'gcantibots'
 def config = [
-        usePraDispatch: false,
-        buildFlow: [
-            PULL_REQUEST    : ['Build', 'Quality Gate'],
-            DEVELOPMENT     : ['Build', 'Containerize'],
-            RELEASE         : ['Build', 'Containerize']
-        ],
-        branchMatcher: [ RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
-        tags: [
-            'Name': 'webb-portal-frontend',
-            'costcenter': '161961',
-            'classification': 'sliver',
-            'email': 'Lst-gc-cdn-antibots.admin@nike.com',
-            'owner': 'gc-cdn-antibots',
-            'nike-department': 'platform engineering - gc launch',
-            'nike-domain': 'gc-cdn-antibots',
-            'nike-application': 'webb-portal-frontend',
-        ],
-        container: [
-                name: 'webb-portal-frontend',
-                group: 'gcantibots',
-                dockerFileName: 'Dockerfile.test',
-        ],
-        notify: [
-            slack: [
-                channel: "#cicd-deploy",
-                onCondition: ['any']
-            ]
-        ],
-        deploymentEnvironment : [
-            test : [
-                deployFlow: [
-                        DEVELOPMENT : ["Publish To ECR", "Deploy"],
-                        RELEASE     : ["Publish To ECR", "Deploy"],
-                ],
-                cloudEnvironment: "test",
-                deploy: [
+    buildFlow: [
+            PULL_REQUEST    : ['Build', 'Compile', 'Local Test', 'Quality Gate'],
+            DEVELOPMENT     : ['Build', 'Compile', 'Containerize', 'Container Test'],
+            // TRIAL           : ['Build', 'Compile', 'Containerize', 'Container Test'],
+            // TWISTLOCK_SCAN  : ['Build', 'Compile', 'Containerize', 'Container Test', 'Twistlock Scan'],
+            // DEPLOY_ALL      : [],
+            RELEASE         : ['Build', 'Compile', 'Local Test', 'Quality Gate', 'Containerize', 'Container Test']
+    ],
+    branchMatcher: [ RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
+    notify: [
+        slack: [
+            channel: "#cicd-deploy",
+            onCondition: ['any']
+        ]
+    ],
+    tags: [
+        'Name': 'webb-portal-frontend',
+        'costcenter': '161961',
+        'classification': 'sliver',
+        'email': 'Lst-gc-cdn-antibots.admin@nike.com',
+        'owner': 'gc-cdn-antibots',
+        'nike-department': 'platform engineering - gc launch',
+        'nike-domain': 'gc-cdn-antibots',
+        'nike-application': 'webb-portal-frontend',
+    ],
+    qma: [
+        configFile: 'quality-config.yaml'
+    ],
+    container: [
+        name: app,
+        group: teamPrefix,
+        dockerFileName: 'Dockerfile.test',
+        // If you want to apply a particular tag
+        // releaseTag: "release",
+    ],
+    containerTest: [
+        //containerTest provides a genericBuild step that can be used to validate the container
+        cmd: 'echo \"my docker container tag is ${DOCKER_CONTAINER}\"',
+    ],
+    // cache: [
+    //     strategy: 'mountAsDockerVolume',
+    //     tool: 'gradle',
+    // ],
+    // build: [
+    //     image: 'gradle:6.8.3-jdk15',
+    //     cmd: 'gradle clean build',
+    // ],
+    // pra: [
+    //     sdbPath: "app/cdservice/a.bmx.scm",
+    //     userNameKey: "github_username",
+    //     passwordKey: "github-pat",
+    // ],
+    deploymentEnvironment : [
+        test : [
+            deployFlow: [
+                    DEVELOPMENT : ["Deploy","Publish To ECR"],
+                    DEPLOY_ALL : ["Deploy"],
+                    RELEASE : ["Deploy", "Publish To ECR", "Quality Gate", "SignalFx Events"],
+            ],
+            signalfx: [
+                app: app,
+                sdbPath: "shared/bmx-shared/jenkins/signalfx",
+                sdbKey:"access-token",
+            ],
+            cloudEnvironment: "test",
+            deploy: [
                     awsRole: "arn:aws-cn:iam::439314357471:role/gcantibots-BrewmasterEcsRole",
-                    // ecrRole: "cop-pipeline-EcrPushRole", // Optional: If you need to use a different role for pushing docker container to ECR. When not provided, awsRole is used.
                     accountId: "439314357471",
-                    // cfAssumeRole: "aws::arn::123456789::role/myCfPermissionsRole",	//	Optional. AWS IAM Role which should be passed on to Cloudformation. This allows AWS CloudFormation to make calls to resources in a stack on your behalf.
                     region: "cn-northwest-1",
+                    launchType: 'EC2',
+                    // credentials: 'caauto0x1a8b42-455229011089-s.caauto0x1a8b42-builduser',
                     clusterName: "webb-portal-frontend-cluster-test",
                     securityGroups: "sg-0676976675a94e49e",
-                    subnets: ["subnet-075e204cb71470d70", "subnet-0e64f859c59876536", "subnet-0f02dd76225273efa"],
+                    subnets: "subnet-075e204cb71470d70, subnet-0e64f859c59876536, subnet-0f02dd76225273efa",
                     taskExecutionRoleArn: "arn:aws:iam::123456789:role/myapp-TaskExecutionRole",
-                    vpcId: "vpc-0f9779e69a780c25e",
+                    vpcId: 'vpc-0f9779e69a780c25e',
                     taskCpu: 1024,
                     appContainerCpu: 1024,
                     taskMemory: 2048,
                     appContainerMemory: 2048,
                     healthCheckPath: '/health-check',
+                    healthCheckPort: '8077',
                     containerPort: '3000',
-                    listenerArn : 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:listener/app/webbFrontendALB/8f0f6089103b9adb/fca23985f6dcdd6f',
-                    listenerRulePriority : 2,
+                    listenerArn: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:listener/app/webbFrontendALB/8f0f6089103b9adb/fca23985f6dcdd6f',
                     containerDesiredCount: 1,
+                    useSplunkTaskDriver: true,
+                    splunkToken: 'e8a2c4e9-2df8-4234-8b3d-b24dc733ce42',
+                    splunkIndex: "np-anti-bots",
+                    splunkUrl: "https://gcsplunk-hec.nike.com:443",
+                    splunkFormat: 'json',
+                    // pollInterval: 15000,
+//                    If using custom stack name
+//                    stackName: "${teamPrefix}-${app}-${env.BRANCH_NAME}-test",
+//                    If using custom template
+//                    cloudFormationTemplate: "ecs-service-template.yaml",
+//                    parameters: [
+//                    ],
+            ],
+            notify: [
+                confirmDeploy: [
+                    message    : "Waiting to deploy. Confirm Deploy",
+                    slack      : [
+                        channel: "#cicd-deploy",
+                        color      : "#7CFC00",
+                    ],
+                    waitTime   : 120,
+                ],
+                deployComplete: [
+                    message    : "DEPLOY COMPLETE Yeeeeeyyyyyy",
+                    slack      : [
+                        channel: "#cicd-deploy",
+                        color      : "#7CFC00",
                     ],
                 ],
-                tags: [
+                slack: [
+                    channel: "#cicd-deploy",
+                    waitTime: 90,
+                    onCondition: ['deploy', 'deployComplete']
+                ]
+            ],
+            userConfirmation: [
+                deploy: [
+                    proceedWhenNoAction: true,
+                    waitTime: 2,
+                    channel: "#cicd-deploy",
+                ]
+            ],
+            tags: [
                     'nike-environment': 'test'
-                ],
-            ], 
-        ],       
+            ],
+        ],
+    ]
+]
 
 ecsDeployPipeline(config)
