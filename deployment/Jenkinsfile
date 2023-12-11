@@ -6,9 +6,6 @@ def config = [
     buildFlow: [
             PULL_REQUEST    : ['Build', 'Compile'],
             DEVELOPMENT     : ['Containerize', 'Container Test'],
-            // TRIAL           : ['Build', 'Compile', 'Containerize', 'Container Test'],
-            // TWISTLOCK_SCAN  : ['Build', 'Compile', 'Containerize', 'Container Test', 'Twistlock Scan'],
-            // DEPLOY_ALL      : [],
             RELEASE         : ['Build', 'Compile', 'Containerize', 'Container Test']
     ],
     branchMatcher: [ RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
@@ -81,7 +78,6 @@ def config = [
                     accountId: "439314357471",
                     region: "cn-northwest-1",
                     launchType: 'EC2',
-                    // credentials: 'caauto0x1a8b42-455229011089-s.caauto0x1a8b42-builduser',
                     clusterName: "webb-portal-frontend-cluster-test",
                     securityGroups: "sg-0676976675a94e49e",
                     subnets: "subnet-075e204cb71470d70, subnet-0e64f859c59876536, subnet-0f02dd76225273efa",
