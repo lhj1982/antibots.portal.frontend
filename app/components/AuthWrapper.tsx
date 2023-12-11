@@ -13,7 +13,9 @@ type AuthWrapperProps = {
 
 export default function AuthWrapper({ children }: AuthWrapperProps) {
   const pathname = usePathname();
+  console.log("PATHNAME", pathname);
   const isAuthCallbackPage = pathname === '/callback';
+  console.log("isAuthCallbackPage", isAuthCallbackPage);
   const { session } = useSession({ keepRenderIfNoSession: isAuthCallbackPage });
   return (
     <>

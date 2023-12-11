@@ -27,7 +27,6 @@ export default function CallbackPage() {
   const [codeRequested, setCodeRequested] = useState(false);
 
   useEffect(() => {
-    if (codeRequested) return; // prevent useEffect trigger twice
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search.slice(1));
     const code = searchParams.get("code");
@@ -55,13 +54,9 @@ export default function CallbackPage() {
         });
         const body: TokenResponse = await response.json();
         setCodeRequested(true);
-        console.log(body);
 
         if (body.access_token !== undefined && body.id_token !== undefined) {
           const decodeIdToken = jwt.decode(body.id_token);
-
-          console.log("asdasdasda", decodeIdToken);
-          console.log(typeof decodeIdToken === "object");
 
           if (typeof decodeIdToken && typeof decodeIdToken === "object") {
             window.localStorage.setItem("username", decodeIdToken?.name);
@@ -99,7 +94,7 @@ export default function CallbackPage() {
     };
 
     fetchCode();
-  }, [codeRequested, router, setSession]);
+  }, []);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black">
