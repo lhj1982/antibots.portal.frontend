@@ -22,11 +22,11 @@ const SideMenu = () => {
                     <h1 className={`m-auto ${usePathname() === '/webbrulelist' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Webb Rule List</h1>
                 </div>
             </Link>
-            <Link href='/artemisrule'>
+            {/* <Link href='/artemisrule'>
                 <div className='flex h-12'>
                     <h1 className={`m-auto ${usePathname() === '/artemisrule' ? 'text-red-300' : 'text-zinc-500'} hover:text-white`}>Create Artemis Rule</h1>
                 </div>
-            </Link>
+            </Link> */}
             <div className='h-0.5 w-11/12 mx-auto bg-gray-700 my-3'></div>
             <Link href='https://confluence.nike.com/pages/viewpage.action?pageId=825536585'>
                 <div className='flex h-12 hover:text-white'>
