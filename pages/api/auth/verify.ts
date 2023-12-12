@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const body: ReqBody = req.body;
 
   const accessToken = body?.data?.accessToken;
-  console.log(accessToken);
+  console.log('handler', { OKTA_ISSUER, OKTA_AUD, accessToken });
 
   if (!accessToken) {
     console.log("No access token, missing access token");
@@ -37,6 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     console.log(res.status(400).json({
       error: verifyError.userMessage,
     }));
-    console.log("Token verify failed");
+    console.log("Token verify failed", verifyError);
   }
 }
