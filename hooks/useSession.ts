@@ -107,7 +107,7 @@ export default function useSession({
           window.localStorage.removeItem(SESSIONKEY);
           goToOktaLogin();
         });
-    } else if (!keepRenderIfNoSession) {
+    } else if (keepRenderIfNoSession == false) {
       goToOktaLogin();
     }
   });
