@@ -13,14 +13,16 @@ type AuthWrapperProps = {
 
 export default function AuthWrapper({ children }: AuthWrapperProps) {
   const pathname = usePathname();
-  console.log("PATHNAME", pathname);
+  console.log("PATHNAME - AuthWrapper: ", pathname);
   const isAuthCallbackPage = pathname === '/callback';
-  console.log("isAuthCallbackPage", isAuthCallbackPage);
-  const { session } = useSession({ keepRenderIfNoSession: isAuthCallbackPage });
+  console.log("isAuthCallbackPage - AuthWrapper: ", isAuthCallbackPage);
+  const { session, setSession } = useSession({ keepRenderIfNoSession: isAuthCallbackPage });
+  console.log("SESSION - AuthWrapper: ", session);
+
   return (
     <>
       {(session || isAuthCallbackPage) && children}
-      {!session && !isAuthCallbackPage && (
+      {(!session && !isAuthCallbackPage) && (
         <div className="w-screen h-screen flex items-center justify-center bg-black">
           <div className="flex items-center">
             <Image
