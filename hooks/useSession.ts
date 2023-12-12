@@ -98,14 +98,15 @@ export default function useSession({
   useEffect(() => {
     if (isSessionVerified) return;
     const sessionInLocal = window.localStorage.getItem(SESSIONKEY);
-    console.log("SESSION LOCAL - useSession", sessionInLocal);
+    console.log("SESSIONLOCAL - useSession", sessionInLocal);
     if (sessionInLocal) {
       verifySession(sessionInLocal)
         .then(() => {
           setIsSessionVerified(true);
           setSession(sessionInLocal);
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log("Verify error: ", err);
           window.localStorage.removeItem(SESSIONKEY);
           console.log("LocalStorage removed");
           goToOktaLogin();

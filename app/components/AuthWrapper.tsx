@@ -18,6 +18,9 @@ export default function AuthWrapper({ children }: AuthWrapperProps) {
   console.log("isAuthCallbackPage - AuthWrapper: ", isAuthCallbackPage);
   const { session } = useSession({ keepRenderIfNoSession: isAuthCallbackPage });
   console.log("SESSION - AuthWrapper: ", session);
+  setTimeout(() => {
+    console.log("WAIT - AuthWrapper: ", session);
+  },3000);
 
   return (
     <>
