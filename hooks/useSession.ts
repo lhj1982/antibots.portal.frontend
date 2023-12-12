@@ -97,6 +97,7 @@ export default function useSession({
   useEffect(() => {
     if (isSessionVerified) return;
     const sessionInLocal = window.localStorage.getItem(SESSIONKEY);
+    console.log("SESSION LOCAL - useSession", sessionInLocal);
     if (sessionInLocal) {
       verifySession(sessionInLocal)
         .then(() => {
@@ -105,6 +106,7 @@ export default function useSession({
         })
         .catch(() => {
           window.localStorage.removeItem(SESSIONKEY);
+          console.log("LocalStorage removed");
           goToOktaLogin();
         });
     } else if (keepRenderIfNoSession == false) {
@@ -115,7 +117,9 @@ export default function useSession({
   const setSession = (session: string) => {
     window.localStorage.setItem(SESSIONKEY, session);
     setSessionState(session);
+    console.log("SESSION LOCALSTORAGE SETTED.")
   };
 
+  console.log("USESESSION SESSION: ", sessionState);
   return { session: sessionState, setSession };
 }
