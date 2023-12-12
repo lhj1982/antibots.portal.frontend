@@ -69,6 +69,7 @@ const goToOktaLogin = async () => {
 };
 
 const verifySession = (session: string) => {
+  console.log("USE SESSION - Verify Stage: "+session);
   return fetch("/api/auth/verify", {
     method: "POST",
     headers: {
