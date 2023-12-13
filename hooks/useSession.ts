@@ -70,7 +70,7 @@ const goToOktaLogin = async () => {
 
 const verifySession = (session: string) => {
   console.log("USE SESSION - Verify Stage: "+session);
-  return fetch("/api/auth/verify", {
+  return fetch("http://localhost:3000/api/auth/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
