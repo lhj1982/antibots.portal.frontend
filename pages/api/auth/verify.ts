@@ -30,13 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     await oktaJwtVerifier.verifyAccessToken(accessToken, OKTA_AUD);
-    res.status(200).json({ data: { valid: true } });
     console.log("Token verified successfully");
+    res.status(200).json({ data: { valid: true } });
   } catch (error) {
     const verifyError = error as JwtVerifyError;
-    console.log(res.status(400).json({
-      error: verifyError.userMessage,
-    }));
     console.log("Token verify failed", verifyError);
+    res.status(400).json({
+      error: verifyError.userMessage,
+    });
   }
 }
