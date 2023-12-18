@@ -13,15 +13,16 @@ type JwtVerifyError = {
   userMessage: string;
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<AuthVerifyResponse>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<AuthVerifyResponse>
+) {
   const body: ReqBody = req.body;
 
   const accessToken = body?.data?.accessToken;
-  console.log('handler', { OKTA_ISSUER, OKTA_AUD, accessToken });
 
   if (!accessToken) {
-    console.log("No access token, missing access token");
-    return res.status(400).json({ error: 'missing access token' });
+    return res.status(400).json({ error: "missing access token" });
   }
 
   const oktaJwtVerifier = new OktaJwtVerifier({
@@ -30,11 +31,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     await oktaJwtVerifier.verifyAccessToken(accessToken, OKTA_AUD);
-    console.log("Token verified successfully");
     res.status(200).json({ data: { valid: true } });
   } catch (error) {
     const verifyError = error as JwtVerifyError;
-    console.log("Token verify failed", verifyError);
     res.status(400).json({
       error: verifyError.userMessage,
     });

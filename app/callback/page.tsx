@@ -29,15 +29,10 @@ export default function CallbackPage() {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    console.log("URL - callback: ", url);
     const searchParams = new URLSearchParams(url.search.slice(1));
-    console.log("SEARCHPARAM - callback: ",searchParams);
     const code = searchParams.get("code");
-    console.log("CODE - callback: ",code);
     const codeVerifier = localStorage.getItem(CODE_VERIFIER_KEY);
-    console.log("CODEVERIFIER - callback: ", codeVerifier);
     const params = new URLSearchParams();
-    console.log("PARAMS - callback: ", params);
 
     if (!code || !codeVerifier) throw new Error("params missed");
 
