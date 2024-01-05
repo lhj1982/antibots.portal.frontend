@@ -77,8 +77,8 @@ export function generateFormData(
     rawSpl.destination = generatedSpl.destination;
     rawSpl.nameSpace = generatedSpl.nameSpace;
     rawSpl.action = generatedSpl.action;
-    rawSpl.project = generatedSpl.override_setting.project;
-    rawSpl.logstore = generatedSpl.override_setting.logstore;
+    rawSpl.project = generatedSpl.project;
+    rawSpl.logstore = generatedSpl.logstore;
 
     if (
       globalFields.dateSearchType === "absolute" &&

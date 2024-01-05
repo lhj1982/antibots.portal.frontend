@@ -39,6 +39,8 @@ type GeneratedSpl = {
   nameSpace: string;
   expiration: number;
   ruleId: string;
+  project?: string;
+  logstore?: string;
   override_setting: {
     dateSearchType: string;
     absoluteDate: {
@@ -48,8 +50,6 @@ type GeneratedSpl = {
     relativeDate: {
       timeInMinutes: number;
     };
-    project?: string;
-    logstore?: string;
   };
   [x: string]: any;
 };

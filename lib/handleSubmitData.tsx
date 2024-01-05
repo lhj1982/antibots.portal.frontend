@@ -24,6 +24,8 @@ function generateData(data: any) {
     obj.action = item.action;
     obj.nameSpace = item.nameSpace;
     obj.expiration = item.ttl;
+    obj.project = item.project;
+    obj.logstore = item.logstore;
     obj.override_setting = {
       dateSearchType: "",
       absoluteDate: {
@@ -32,9 +34,7 @@ function generateData(data: any) {
       },
       relativeDate: {
         timeInMinutes: 0,
-      },
-      project: "",
-      logstore: "",
+      }
     };
 
     switch (dateSearchType) {
@@ -67,8 +67,8 @@ function generateData(data: any) {
     }
 
     if (webbSourceType === "ali-sls") {
-      obj.override_setting.project = item.project;
-      obj.override_setting.logstore = item.logstore;
+      obj.project = item.project;
+      obj.logstore = item.logstore;
     }
 
     splArr.push(obj);
