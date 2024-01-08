@@ -327,6 +327,9 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         <Option value="payment_suspect_users">
                           payment_suspect_users
                         </Option>
+                        <Option value="test">
+                          test_namespace
+                        </Option>
                       </Select>
                     </Form.Item>
                     {oneTimeForm.webbSourceType === "ali-sls" && (
