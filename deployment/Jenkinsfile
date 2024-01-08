@@ -6,7 +6,7 @@ def config = [
     buildFlow: [
             PULL_REQUEST    : ['Build', 'Compile'],
             DEVELOPMENT     : ['Containerize', 'Container Test'],
-            RELEASE         : ['Build', 'Compile', 'Containerize', 'Container Test']
+            RELEASE         : ['Containerize', 'Container Test']
     ],
     branchMatcher: [ RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
     notify: [
@@ -15,12 +15,6 @@ def config = [
             onCondition: ['any']
         ]
     ],
-    // build: [
-    //     // image : 'artifactory.nike.com:9002/servegc/cicd-base-nodejs:latest',
-    //     dockerfile : 'Dockerfile.test',
-    //     dockerImageName	: teamPrefix + '-' + app,
-    //     cmd: "echo ${params.dockerImageName}"
-    // ],
     tags: [
         'Name': 'webb-portal-frontend',
         'costcenter': '161961',
@@ -39,7 +33,7 @@ def config = [
     container: [
         name: app,
         group: teamPrefix,
-        dockerFileName: 'Dockerfile.test',
+        dockerFileName: (params.Flow == 'RELEASE') ? 'Dockerfile.prod' : 'Dockerfile.test',
         // If you want to apply a particular tag
         // releaseTag: "release",
     ],
@@ -138,6 +132,85 @@ def config = [
             ],
             tags: [
                     'nike-environment': 'test'
+            ],
+        ],
+        prod : [
+            agentLabel: 'china',
+            deployFlow: [
+                    DEVELOPMENT : ["Publish To ECR","Deploy"],
+                    RELEASE : ["Publish To ECR","Deploy"],
+            ],
+            signalfx: [
+                app: app,
+                sdbPath: "shared/bmx-shared/jenkins/signalfx",
+                sdbKey:"access-token",
+            ],
+            cloudEnvironment: "prod",
+            deploy: [
+                    awsRole: "arn:aws-cn:iam::439413396736:role/gcantibots-BrewmasterEcsRole",
+                    accountId: "439413396736",
+                    region: "cn-northwest-1",
+                    launchType: 'EC2',
+                    clusterName: "webb-portal-frontend-cluster-prod",
+                    securityGroups: "sg-05dd79bfe6d170e26",
+                    subnets: 'subnet-0b23b05edb4035d28,subnet-054062238d2327b0e,subnet-07b7c0ab40a91ae55',
+                    taskExecutionRoleArn: "arn:aws-cn:iam::439413396736:role/gcantibots-TaskExecutionRole",
+                    vpcId: 'vpc-01472d21bb792d03e',
+                    taskCpu: 1024,
+                    appContainerCpu: 1024,
+                    taskMemory: 1024,
+                    appContainerMemory: 1024,
+                    healthCheckPath: '/',
+                    healthCheckPort: '3000',
+                    containerPort: '3000',
+                    listenerArn: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439413396736:listener/app/webbFrontendALB/f7cc8db7e9da04fb/bf74f91102aafa3c',
+                    listenerRulePriority: 1,
+                    containerDesiredCount: 1,
+                    // useSplunkTaskDriver: true,
+                    // splunkToken: 'e8a2c4e9-2df8-4234-8b3d-b24dc733ce42',
+                    // splunkIndex: "np-anti-bots",
+                    // splunkUrl: "https://gcsplunk-hec.nike.com:443",
+                    // splunkFormat: 'json',
+                    targetGroupArn: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439413396736:targetgroup/Webb-F-Front-WYNPBGKQL9DN/b2d057173e5e4aee',
+                    // pollInterval: 15000,
+//                    If using custom stack name
+//                    stackName: "${teamPrefix}-${app}-${env.BRANCH_NAME}-test",
+//                    If using custom template
+//                    cloudFormationTemplate: "ecs-service-template.yaml",
+//                    parameters: [
+//                    ],
+            ],
+            notify: [
+                confirmDeploy: [
+                    message    : "Waiting to deploy. Confirm Deploy",
+                    slack      : [
+                        channel: "#cicd-deploy",
+                        color      : "#7CFC00",
+                    ],
+                    waitTime   : 120,
+                ],
+                deployComplete: [
+                    message    : "DEPLOY COMPLETE Yeeeeeyyyyyy",
+                    slack      : [
+                        channel: "#cicd-deploy",
+                        color      : "#7CFC00",
+                    ],
+                ],
+                slack: [
+                    channel: "#cicd-deploy",
+                    waitTime: 90,
+                    onCondition: ['deploy', 'deployComplete']
+                ]
+            ],
+            userConfirmation: [
+                deploy: [
+                    proceedWhenNoAction: true,
+                    waitTime: 2,
+                    channel: "#cicd-deploy",
+                ]
+            ],
+            tags: [
+                    'nike-environment': 'prod'
             ],
         ],
     ]
