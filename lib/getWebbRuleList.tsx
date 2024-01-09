@@ -16,7 +16,7 @@ export default async function getWebbRuleList() {
     const { data } = response.data;
     return data;
   } catch (err) {
-    console.log("Fetch Rule List Error, err: ", err);
+    //console.log("Fetch Rule List Error, err: ", err);
     throw err;
   }
 }

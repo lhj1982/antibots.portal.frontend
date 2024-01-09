@@ -17,7 +17,7 @@ export default async function deleteWebbRuleItem(fileName: string) {
     const { data } = response.data;
     return data;
   } catch (err) {
-    console.log(`Delete Rule ${fileName} failed , err: ${err}`);
+    //console.log(`Delete Rule ${fileName} failed , err: ${err}`);
     throw err;
   }
 }

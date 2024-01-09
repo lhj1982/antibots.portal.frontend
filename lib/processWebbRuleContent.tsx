@@ -86,7 +86,7 @@ export function generateFormData(
       generatedSpl.override_setting.absoluteDate.stopDatetime.includes("T")
     ) {
       webbFormData.timeType = "with_date";
-      console.log("Time With Date");
+      //console.log("Time With Date");
       rawSpl.searchStartTime = dayjs(
         generatedSpl.override_setting.absoluteDate.startDatetime
       );
@@ -108,7 +108,7 @@ export function generateFormData(
         "HH:mm:ss"
       );
     } else {
-      console.log("Time invalid");
+      //console.log("Time invalid");
     }
 
     rawSpl.searchTimeRange =

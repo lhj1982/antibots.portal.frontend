@@ -69,7 +69,6 @@ const goToOktaLogin = async () => {
 };
 
 const verifySession = (session: string) => {
-  console.log("USE SESSION - Verify Stage: "+session);
   return fetch("api/auth/verify", {
     method: "POST",
     headers: {
@@ -98,7 +97,6 @@ export default function useSession({
   useEffect(() => {
     if (isSessionVerified) return;
     const sessionInLocal = window.localStorage.getItem(SESSIONKEY);
-    console.log("SESSIONLOCAL - useSession", sessionInLocal);
     if (sessionInLocal) {
       verifySession(sessionInLocal)
         .then(() => {
@@ -106,9 +104,8 @@ export default function useSession({
           setSession(sessionInLocal);
         })
         .catch((err) => {
-          console.log("Verify error: ", err);
+          //console.log("Verify error: ", err);
           window.localStorage.removeItem(SESSIONKEY);
-          console.log("LocalStorage removed");
           goToOktaLogin();
         });
     } else if (keepRenderIfNoSession == false) {
@@ -119,9 +116,7 @@ export default function useSession({
   const setSession = (session: string) => {
     window.localStorage.setItem(SESSIONKEY, session);
     setSessionState(session);
-    console.log("SESSION LOCALSTORAGE SETTED.")
   };
 
-  console.log("USESESSION SESSION: ", sessionState);
   return { session: sessionState, setSession };
 }

@@ -24,7 +24,6 @@ type TokenResponse = {
 export default function CallbackPage() {
   const router = useRouter();
   const { session, setSession } = useSession({ keepRenderIfNoSession: true });
-  console.log("Session - callback: ", session);
   const [codeRequested, setCodeRequested] = useState(false);
 
   useEffect(() => {

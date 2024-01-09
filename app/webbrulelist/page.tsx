@@ -49,7 +49,7 @@ const WebbRuleList = () => {
       const fileType = recurringTypes ? "schedule-recurring" : "schedule-onetime";
       const param = fileType + "/" + selectedDeletionFile;
       const response = await deleteWebbRuleItem(param);
-      console.log("delete response: ", response);
+      //console.log("delete response: ", response);
       setOpen(false);
       setConfirmLoading(false);
       setSelectedDeletionFile("");
@@ -59,7 +59,7 @@ const WebbRuleList = () => {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    //console.log("Clicked cancel button");
     setOpen(false);
   };
 

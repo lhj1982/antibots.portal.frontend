@@ -17,7 +17,7 @@ export default async function getWebbRuleItem(fileName: string) {
     const { data } = response.data;
     return data;
   } catch (err) {
-    console.log(`Fetch Rule content ${fileName} failed , err: ${err}`);
+    //console.log(`Fetch Rule content ${fileName} failed , err: ${err}`);
     throw err;
   }
 }

@@ -32,9 +32,9 @@ const WebbRuleDetail = ({ params: { file } }: Params) => {
 
   async function getData(fileName: string) {
     try {
-      console.log("fileName: " + fileName);
+      //console.log("fileName: " + fileName);
       const fileContent: WebbRuleContent = await getWebbRuleItem(fileName);
-      console.log("Get Data finished: ", fileContent);
+      //console.log("Get Data finished: ", fileContent);
       const globalFields: WebbGlobalFields =
         processWebbRuleGlobalFields(fileContent);
       globalFields.formType = fileName.split("/")[0];
@@ -50,12 +50,12 @@ const WebbRuleDetail = ({ params: { file } }: Params) => {
         globalFields.taskType
       );
       globalFields.dateSearchType = splArr[0].override_setting.dateSearchType;
-      console.log("Spl Arrays: ", splArr);
-      console.log("Global fields: ", globalFields);
+      //console.log("Spl Arrays: ", splArr);
+      //console.log("Global fields: ", globalFields);
       setRuleContent(fileContent);
       const formData = generateFormData(globalFields, splArr);
       setFormData(formData);
-      console.log("Form data: ", formData);
+      //console.log("Form data: ", formData);
     } catch (e) {
       alert("Error: Fetch file content failed");
     }

@@ -77,7 +77,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
         initialValues={{ items: [{}] }}
         className="w-full"
         onFinish={(values) => {
-          console.log("values: ", values);
+          //console.log("values: ", values);
           const res = handleSubmitData(
             "schedule-onetime", // path
             oneTimeForm.fileName,
@@ -86,9 +86,9 @@ const WebbOneTimeForm = (props: SelfProps) => {
           console.log("res: ", res);
           res
             .then((res) => {
-              console.log(res);
-              console.log(res.status);
-              console.log(res.data.message);
+              //console.log(res);
+              //console.log(res.status);
+              //console.log(res.data.message);
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: res.status,
@@ -96,8 +96,8 @@ const WebbOneTimeForm = (props: SelfProps) => {
               });
             })
             .catch((err) => {
-              console.log(err.response.status);
-              console.log(err.message);
+              //console.log(err.response.status);
+              //console.log(err.message);
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: err.response.status,

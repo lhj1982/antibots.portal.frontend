@@ -57,7 +57,7 @@ const NameList: React.FC = () => {
       setCurrentPage(page);
       setTotal(totalItems);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

@@ -96,17 +96,17 @@ const WebbRecurringForm = (props: SelfProps) => {
         initialValues={{ items: [{}] }}
         className="w-full"
         onFinish={(values) => {
-          console.log("values: ", values);
+          //console.log("values: ", values);
           const res = handleSubmitData(
             "schedule-recurring", // path
             recurringForm.fileName,
             values
           );
-          console.log("res: ", res);
+          //console.log("res: ", res);
           res
             .then((res) => {
-              console.log(res.status);
-              console.log(res.data.message);
+              //console.log(res.status);
+              //console.log(res.data.message);
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: res.status,
@@ -114,8 +114,8 @@ const WebbRecurringForm = (props: SelfProps) => {
               });
             })
             .catch((err) => {
-              console.log(err.response.status);
-              console.log(err.message);
+              //console.log(err.response.status);
+              //console.log(err.message);
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: err.response.status,
