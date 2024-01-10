@@ -104,7 +104,7 @@ export default async function handleSubmitData(
   data: any
 ) {
   const generatedData = generateData(data);
-  console.log("Generated Data: ", generatedData);
+  //console.log("Generated Data: ", generatedData);
   // http://localhost:3001/antibotswebb/v1/upload
   const response = await axios.post(
     `${BACKEND_HOST}/${WEBBRULE_UPLOAD_PATH}`,
