@@ -97,7 +97,14 @@ function generateData(data: any) {
                       }
                   }
               }`;
-  return JSON.parse(res);
+  var postData = {}
+  try {
+    console.log('before res:',res);
+    postData = JSON.parse(res);
+  } catch (error) {
+    console.log('catch JSON.parse error:',error);
+  }
+  return postData
 }
 
 export default async function handleSubmitData(
@@ -105,7 +112,13 @@ export default async function handleSubmitData(
   fileName: string,
   data: any
 ) {
-  const generatedData = generateData(data);
+  let generatedData = {};
+  try {
+    generatedData = generateData(data);
+  } catch (error) {
+    console.log('catch handleSubmitData error:',error);
+  }
+  // const generatedData = generateData(data);
   console.log("Generated Data: ", generatedData);
   // http://localhost:3001/antibotswebb/v1/upload
   const response = await axios.post(
