@@ -77,6 +77,10 @@ const WebbOneTimeForm = (props: SelfProps) => {
         initialValues={{ items: [{}] }}
         className="w-full"
         onFinish={(values) => {
+          setSubmitStatus({
+            statusCode: 0,
+            statusMessage: "",
+          });
           //console.log("values: ", values);
           const res = handleSubmitData(
             "schedule-onetime", // path
@@ -106,7 +110,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             });
           setTimeout(() => {
             setShowModal(true);
-          }, 5000);
+          }, 8000);
         }}
       >
         <Form.Item
@@ -327,9 +331,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         <Option value="payment_suspect_users">
                           payment_suspect_users
                         </Option>
-                        <Option value="test">
-                          test_namespace
-                        </Option>
+                        <Option value="test">test_namespace</Option>
                       </Select>
                     </Form.Item>
                     {oneTimeForm.webbSourceType === "ali-sls" && (

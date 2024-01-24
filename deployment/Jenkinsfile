@@ -32,7 +32,7 @@ def config = [
     // ],
     container: [
         name: app,
-        group: teamPrefix,
+        group: teamPrefix, // name and group are used to find the ecr on aws, so the ecr name need to match with `${name}/${group}`
         dockerFileName: (params.Flow == 'RELEASE') ? 'Dockerfile.prod' : 'Dockerfile.test',
         // If you want to apply a particular tag
         // releaseTag: "release",

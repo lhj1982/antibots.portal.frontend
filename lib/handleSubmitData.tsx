@@ -13,6 +13,8 @@ function generateData(data: any) {
     timeType,
   } = data;
 
+  console.log("SPL: ", spl_config);
+
   let splArr: Array<GeneratedSpl> = [];
 
   spl_config.forEach((item: any) => {
@@ -74,7 +76,9 @@ function generateData(data: any) {
     splArr.push(obj);
   });
 
+  console.log("Ready for stringify: ", splArr);
   let splStr = JSON.stringify(splArr);
+  console.log("After stringify: ", splStr);
 
   let res = `{
                   "${webbSourceType}": {
