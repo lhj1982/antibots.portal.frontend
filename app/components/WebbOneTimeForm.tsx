@@ -87,7 +87,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             oneTimeForm.fileName,
             values
           );
-          console.log("res: ", res);
+          console.log("res: ", typeof res, res);
           res
             .then((res) => {
               //console.log(res);

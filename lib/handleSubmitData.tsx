@@ -13,7 +13,7 @@ function generateData(data: any) {
     timeType,
   } = data;
 
-  console.log("SPL: ", spl_config);
+  // console.log("SPL: ", spl_config);
 
   let splArr: Array<GeneratedSpl> = [];
 
@@ -76,9 +76,7 @@ function generateData(data: any) {
     splArr.push(obj);
   });
 
-  console.log("Ready for stringify: ", splArr);
   let splStr = JSON.stringify(splArr);
-  console.log("After stringify: ", splStr);
 
   let res = `{
                   "${webbSourceType}": {
@@ -108,7 +106,7 @@ export default async function handleSubmitData(
   data: any
 ) {
   const generatedData = generateData(data);
-  //console.log("Generated Data: ", generatedData);
+  console.log("Generated Data: ", generatedData);
   // http://localhost:3001/antibotswebb/v1/upload
   const response = await axios.post(
     `${BACKEND_HOST}/${WEBBRULE_UPLOAD_PATH}`,
@@ -122,5 +120,6 @@ export default async function handleSubmitData(
       },
     }
   );
+  console.log("response: ", response);
   return response;
 }
