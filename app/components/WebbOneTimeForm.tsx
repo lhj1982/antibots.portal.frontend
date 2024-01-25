@@ -22,7 +22,7 @@ import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/navigation";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -57,6 +57,11 @@ const WebbOneTimeForm = (props: SelfProps) => {
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= moment().endOf("day");
   };
+
+  const onOkHandler = () => {
+    setShowModal(false);
+    router.push('/webbrulelist');
+  }
 
   useEffect(() => {
     setOneTimeForm(formData);
@@ -363,10 +368,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
                   open={showModal}
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
-                  onOk={() => {
-                    setShowModal(false);
-                    router.push('/webbrulelist');
-                  }}
+                  onOk={onOkHandler}
                   maskClosable={false}
                 >
                   <SubmitResult
