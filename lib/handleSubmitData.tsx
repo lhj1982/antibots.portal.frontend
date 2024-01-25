@@ -99,10 +99,10 @@ function generateData(data: any) {
               }`;
   var postData = {}
   try {
-    console.log('before res:',res);
+    // console.log('before res:',res);
     postData = JSON.parse(res);
   } catch (error) {
-    console.log('catch JSON.parse error:',error);
+    console.log('Catch Generate JSON.parse error:',error);
   }
   return postData
 }
@@ -116,10 +116,10 @@ export default async function handleSubmitData(
   try {
     generatedData = generateData(data);
   } catch (error) {
-    console.log('catch handleSubmitData error:',error);
+    console.log('catch handleSubmitData error: ', error);
   }
   // const generatedData = generateData(data);
-  console.log("Generated Data: ", generatedData);
+  // console.log("Generated Data: ", generatedData);
   // http://localhost:3001/antibotswebb/v1/upload
   const response = await axios.post(
     `${BACKEND_HOST}/${WEBBRULE_UPLOAD_PATH}`,
@@ -133,6 +133,6 @@ export default async function handleSubmitData(
       },
     }
   );
-  console.log("response: ", response);
+  // console.log("response: ", response);
   return response;
 }

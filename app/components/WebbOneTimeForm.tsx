@@ -22,6 +22,7 @@ import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
+import { useRouter } from 'next/router'
 
 type SelfProps = {
   isUpdate: boolean;
@@ -29,6 +30,7 @@ type SelfProps = {
 };
 
 const WebbOneTimeForm = (props: SelfProps) => {
+  const router = useRouter();
   const { isUpdate, formData } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
@@ -361,7 +363,10 @@ const WebbOneTimeForm = (props: SelfProps) => {
                   open={showModal}
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
-                  onOk={() => setShowModal(false)}
+                  onOk={() => {
+                    setShowModal(false);
+                    router.push('/webbrulelist');
+                  }}
                   maskClosable={false}
                 >
                   <SubmitResult
