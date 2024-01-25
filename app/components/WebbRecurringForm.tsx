@@ -22,6 +22,7 @@ import handleSubmitData from "@/lib/handleSubmitData";
 import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
+import { useRouter } from "next/navigation";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -29,6 +30,7 @@ type SelfProps = {
 };
 
 const WebbRecurringForm = (props: SelfProps) => {
+  const router = useRouter();
   const { isUpdate, formData } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
@@ -44,6 +46,11 @@ const WebbRecurringForm = (props: SelfProps) => {
     scheduleIntervals: "",
     spl_config: [],
   });
+
+  const onOkHandler = () => {
+    setShowModal(false);
+    router.push('/webbrulelist');
+  }
 
   const [showModal, setShowModal] = useState(false);
 
@@ -423,7 +430,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                   open={showModal}
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
-                  onOk={() => setShowModal(false)}
+                  onOk={onOkHandler}
                   maskClosable={false}
                 >
                   <SubmitResult
