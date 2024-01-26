@@ -34,3 +34,36 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+# Docker CMD
+docker build -t antibots.portal.frontend.test -f Dockerfile.test .
+docker run -p 3000:3000 -d antibots.portal.frontend.test:latest
+
+# Upload to ECR
+aws ecr get-login-password --region cn-northwest-1 | docker login --username AWS --password-stdin 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn
+
+docker build -t webb-portal-ui -f Dockerfile.test .
+
+git_version=`git rev-parse --short HEAD`
+
+docker tag webb-portal-ui 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-frontend-task:${git_version}
+
+docker push 439314357471.dkr.ecr.cn-northwest-1.amazonaws.com.cn/webb-portal-frontend-task:${git_version}
+
+# Resource Stack
+- aws --region cn-northwest-1 --profile default \
+  cloudformation deploy \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --template-file deployment/cloudformation/antibots.portal.frontend.resources.yaml\
+  --stack-name antibots-portal-frontend-resources \
+  --parameter-overrides Env=test
+
+# sam template：
+- git_version=`git rev-parse --short HEAD`
+- aws --region cn-northwest-1 --profile default \
+  cloudformation deploy \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --template-file deployment/cloudformation/sam-template.yaml \
+  --stack-name antibots-webb-portal-frontend-task \
+  --parameter-overrides "Env=test" "ImageVersion=${git_version}"

@@ -1,8 +1,4 @@
-
 export default function Home() {
-  return (
-    <main>
-      <h3>Webb</h3>
-    </main>
-  )
+  //console.log(process.env.NEXT_PUBLIC_CURRENT_ENV);
+  return <main></main>;
 }
