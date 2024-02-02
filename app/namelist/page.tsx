@@ -1,28 +1,27 @@
 "use client";
-import { SearchOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
-import Highlighter from "react-highlight-words";
 import type { InputRef, PaginationProps } from "antd";
-import { Button, FloatButton, Input, Space, Table, Tooltip } from "antd";
-import type { ColumnType, ColumnsType } from "antd/es/table";
-import type { FilterConfirmProps } from "antd/es/table/interface";
+import { FloatButton, Table, Tooltip } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import { DataType } from "@/type";
 import { BACKEND_HOST, NAMELIST_PATH } from "@/utils/constants";
 import dayjs from "dayjs";
+import SearchForm from "../components/SearchForm";
 
 type DataIndex = keyof DataType;
 
 const NameList: React.FC = () => {
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState<any>(0);
   const [currentPage, setCurrentPage] = useState<any>(1);
   const [pageSize, setPageSize] = useState<any>(50);
   const [data, setData] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const searchInput = useRef<InputRef>(null);
+  const handleSearchProps = (query: string) => {
+    setSearchQuery(query);
+  }
 
   const itemRender: PaginationProps["itemRender"] = (
     _,
@@ -168,6 +167,7 @@ const NameList: React.FC = () => {
 
   return (
     <div>
+      <SearchForm handleSearchProps = {handleSearchProps} />
       <Table
         columns={columns}
         dataSource={data}

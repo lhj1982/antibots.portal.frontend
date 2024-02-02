@@ -3,7 +3,7 @@ import { Moment } from "moment-timezone";
 
 interface DataType {
   type: string;
-  ttl: string | number;
+  ttl: number;
   value: string;
   action: string | null;
   namespace: string | null;
