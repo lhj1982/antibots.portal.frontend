@@ -12,6 +12,7 @@ import {
 import { MonitorOutlined } from "@ant-design/icons";
 import { RangePickerProps } from "antd/es/date-picker";
 import moment from "moment";
+import { handleSearchQuery } from "@/lib/handleSearchQuery";
 
 type SelfProps = {
     handleSearchProps: (query: string)=> void;
@@ -54,6 +55,8 @@ const SearchForm = (props: SelfProps) => {
             className="w-full"
             onFinish={(values) => {
               console.log(values);
+              const query = handleSearchQuery(values);
+              handleSearchProps(query);
             }}
           >
             {/*first Row*/}

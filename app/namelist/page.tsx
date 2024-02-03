@@ -37,7 +37,7 @@ const NameList: React.FC = () => {
     return originalElement;
   };
 
-  const fetchPageData = async (pageNum: any, pageSize: any) => {
+  const fetchPageData = async (pageNum: any, pageSize: any, searchQuery: string) => {
     setLoading(true);
     let config = {
       headers: {
@@ -48,7 +48,7 @@ const NameList: React.FC = () => {
     try {
       const response = await axios.get(
         // `http://localhost:3001/antibotswebb/v1/list?page=${pageNum}&limit=${pageSize}`,
-        `${BACKEND_HOST}/${NAMELIST_PATH}?page=${pageNum}&limit=${pageSize}`,
+        `${BACKEND_HOST}/${NAMELIST_PATH}?page=${pageNum}&limit=${pageSize}${searchQuery}`,
         config
       );
       const { items, totalItems, page } = response.data.data;
@@ -62,8 +62,8 @@ const NameList: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchPageData(1, pageSize);
-  }, [pageSize]);
+    fetchPageData(1, pageSize, searchQuery);
+  }, [pageSize, searchQuery]);
 
   const columns: ColumnsType<DataType> = [
     {
