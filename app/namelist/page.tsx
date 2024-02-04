@@ -21,7 +21,7 @@ const NameList: React.FC = () => {
 
   const handleSearchProps = (query: string) => {
     setSearchQuery(query);
-  }
+  };
 
   const itemRender: PaginationProps["itemRender"] = (
     _,
@@ -37,7 +37,11 @@ const NameList: React.FC = () => {
     return originalElement;
   };
 
-  const fetchPageData = async (pageNum: any, pageSize: any, searchQuery: string) => {
+  const fetchPageData = async (
+    pageNum: any,
+    pageSize: any,
+    searchQuery: string
+  ) => {
     setLoading(true);
     let config = {
       headers: {
@@ -96,13 +100,13 @@ const NameList: React.FC = () => {
       sorter: (a, b) => a.ttl - b.ttl,
       sortDirections: ["descend", "ascend"],
       render: (ttl) => {
-        const dateString = dayjs.unix(ttl).format('YYYY-MM-DD HH:mm:ss');
+        const dateString = dayjs.unix(ttl).format("YYYY-MM-DD HH:mm:ss");
         return (
           <Tooltip placement="top" title={dateString}>
             <span>{ttl}</span>
           </Tooltip>
         );
-      }
+      },
     },
     {
       title: "Action",
@@ -141,13 +145,15 @@ const NameList: React.FC = () => {
       sorter: (a, b) => a.creationTime - b.creationTime,
       sortDirections: ["descend", "ascend"],
       render: (creationTime) => {
-        const dateString = dayjs.unix(creationTime).format('YYYY-MM-DD HH:mm:ss');
+        const dateString = dayjs
+          .unix(creationTime)
+          .format("YYYY-MM-DD HH:mm:ss");
         return (
           <Tooltip placement="top" title={dateString}>
             <span>{creationTime}</span>
           </Tooltip>
         );
-      }
+      },
     },
     {
       title: "Destination",
@@ -167,7 +173,7 @@ const NameList: React.FC = () => {
 
   return (
     <div>
-      <SearchForm handleSearchProps = {handleSearchProps} />
+      <SearchForm handleSearchProps={handleSearchProps} />
       <Table
         columns={columns}
         dataSource={data}
@@ -179,11 +185,11 @@ const NameList: React.FC = () => {
           itemRender: itemRender,
           showQuickJumper: true,
           onChange: (page, pageSize) => {
-            fetchPageData(page, pageSize);
+            fetchPageData(page, pageSize, searchQuery);
           },
         }}
       />
-      <FloatButton.BackTop type= "primary"/>
+      <FloatButton.BackTop type="primary" />
     </div>
   );
 };
