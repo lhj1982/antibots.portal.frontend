@@ -19,7 +19,7 @@ const SubmitButton = ({ form }: { form: FormInstance }) => {
         return newLoadings;
       });
       setSubmittable(true);
-    }, 9000);
+    }, 6000);
   };
 
   // Watch all values
