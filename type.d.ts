@@ -13,6 +13,7 @@ interface DataType {
   destination: string;
   author: string | null;
   source: string | null;
+  version: string | null;
 }
 
 type AuthVerifyResponse = {
