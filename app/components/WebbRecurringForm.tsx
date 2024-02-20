@@ -23,6 +23,7 @@ import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
 import { useRouter } from "next/navigation";
+import LoadingModal from "./LoadingModal";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -48,14 +49,20 @@ const WebbRecurringForm = (props: SelfProps) => {
   });
 
   const onOkHandler = () => {
-    setShowModal(false);
+    setShowSubmitModal(false);
     router.push('/webbrulelist');
   }
 
-  const [showModal, setShowModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
+
+  const loadingModalHandler = (isOpen: boolean) => {
+    setShowLoadingModal(isOpen);
+  }
 
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
-    statusCode: 0,
+    statusCode: "",
     statusMessage: "Something Went wrong",
   });
 
@@ -112,26 +119,25 @@ const WebbRecurringForm = (props: SelfProps) => {
           //console.log("res: ", res);
           res
             .then((res) => {
-              //console.log(res.status);
-              //console.log(res.data.message);
+              //console.log(res);
               setSubmitStatus({
                 ...submitStatus,
-                statusCode: res.status,
-                statusMessage: res.data.message,
+                statusCode: res.data.data.statusCode,
+                statusMessage: res.data.data.message,
               });
+              setShowLoadingModal(false);
+              setShowSubmitModal(true);
             })
             .catch((err) => {
-              //console.log(err.response.status);
-              //console.log(err.message);
+              //console.log(err);
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: err.response.status,
                 statusMessage: err.message,
               });
+              setShowLoadingModal(false);
+              setShowSubmitModal(true);
             });
-          setTimeout(() => {
-            setShowModal(true);
-          }, 3000);
         }}
       >
         <Form.Item
@@ -427,17 +433,19 @@ const WebbRecurringForm = (props: SelfProps) => {
                   + Add New SPL
                 </Button>
                 <Modal
-                  open={showModal}
+                  open={showSubmitModal}
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
                   onOk={onOkHandler}
                   maskClosable={false}
+                  closeIcon = {null}
                 >
                   <SubmitResult
                     statusCode={submitStatus.statusCode}
                     statusMessage={submitStatus.statusMessage}
                   />
                 </Modal>
+                <LoadingModal isOpen = {showLoadingModal} />
               </div>
             )}
           </Form.List>
@@ -448,7 +456,7 @@ const WebbRecurringForm = (props: SelfProps) => {
             sm: { span: 16, offset: 10 },
           }}
         >
-          <SubmitButton form={form} />
+          <SubmitButton form={form} loadingModalHandler = {loadingModalHandler}/>
         </Form.Item>
         <Form.Item noStyle shouldUpdate>
           {() => (

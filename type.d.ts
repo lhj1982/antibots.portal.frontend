@@ -70,7 +70,7 @@ type RawSpl = {
 };
 
 type SubmitStatus = {
-  statusCode: number;
+  statusCode: number | string;
   statusMessage: string;
 };
 

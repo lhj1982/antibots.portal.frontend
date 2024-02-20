@@ -23,6 +23,7 @@ import SubmitResult from "./SubmitResult";
 import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
 import { useRouter } from "next/navigation";
+import LoadingModal from "./LoadingModal";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -47,11 +48,17 @@ const WebbOneTimeForm = (props: SelfProps) => {
     spl_config: [],
   });
 
-  const [showModal, setShowModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+
+  const [showLoadingModal, setShowLoadingModal] = useState(false); 
+
+  const loadingModalHandler = (isOpen: boolean) => {
+    setShowLoadingModal(isOpen);
+  }
 
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
-    statusCode: 0,
-    statusMessage: "",
+    statusCode: "",
+    statusMessage: "Something Went wrong",
   });
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -59,9 +66,9 @@ const WebbOneTimeForm = (props: SelfProps) => {
   };
 
   const onOkHandler = () => {
-    setShowModal(false);
-    router.push('/webbrulelist');
-  }
+    setShowSubmitModal(false);
+    router.push("/webbrulelist");
+  };
 
   useEffect(() => {
     setOneTimeForm(formData);
@@ -84,6 +91,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
         initialValues={{ items: [{}] }}
         className="w-full"
         onFinish={(values) => {
+          // setShowLoadingModal(true);
           setSubmitStatus({
             statusCode: 0,
             statusMessage: "",
@@ -94,30 +102,28 @@ const WebbOneTimeForm = (props: SelfProps) => {
             oneTimeForm.fileName,
             values
           );
-          console.log("res: ", typeof res, res);
+
           res
             .then((res) => {
-              //console.log(res);
-              //console.log(res.status);
-              //console.log(res.data.message);
+              console.log("XXX: ", res);
               setSubmitStatus({
                 ...submitStatus,
-                statusCode: res.status,
-                statusMessage: res.data.message,
+                statusCode: res.data.data.statusCode,
+                statusMessage: res.data.data.message,
               });
+              setShowLoadingModal(false);
+              setShowSubmitModal(true);
             })
             .catch((err) => {
-              //console.log(err.response.status);
-              //console.log(err.message);
+              //console.log(err)
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: err.response.status,
                 statusMessage: err.message,
               });
+              setShowLoadingModal(false);
+              setShowSubmitModal(true);
             });
-          setTimeout(() => {
-            setShowModal(true);
-          }, 8000);
         }}
       >
         <Form.Item
@@ -365,17 +371,19 @@ const WebbOneTimeForm = (props: SelfProps) => {
                   + Add New SPL
                 </Button>
                 <Modal
-                  open={showModal}
+                  open={showSubmitModal}
                   okText="Got it"
                   cancelButtonProps={{ style: { display: "none" } }}
                   onOk={onOkHandler}
                   maskClosable={false}
+                  closeIcon = {null}
                 >
                   <SubmitResult
                     statusCode={submitStatus.statusCode}
                     statusMessage={submitStatus.statusMessage}
                   />
                 </Modal>
+                <LoadingModal isOpen = {showLoadingModal} />
               </div>
             )}
           </Form.List>
@@ -386,7 +394,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             sm: { span: 16, offset: 10 },
           }}
         >
-          <SubmitButton form={form} />
+          <SubmitButton form={form}  loadingModalHandler = {loadingModalHandler} />
         </Form.Item>
         <Form.Item noStyle shouldUpdate>
           {() => (
