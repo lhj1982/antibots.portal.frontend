@@ -30,7 +30,7 @@ const SubmitResult = (props: SelfProps) => {
     } else if (statusCode == "502") {
       statusMessage =
         statusMessage +
-        "\n Make sure you're using the right form type with the correct Rate & Cron Expression";
+        "\n Make sure you're using the right task type with the correct Rate/Cron Expression";
       return statusMessage;
     } else {
       statusMessage = "Something went wrong: " + statusMessage;
