@@ -2,9 +2,16 @@ import { Button, Form, FormInstance } from "antd";
 import React, { useEffect, useState } from "react";
 import { RocketOutlined } from "@ant-design/icons";
 
-const SubmitButton = ({ form }: { form: FormInstance }) => {
+type SelfProps = {
+  form: FormInstance,
+  loadingModalHandler: (isOpen: boolean) => void
+}
+
+const SubmitButton = (props: SelfProps) => {
   const [submittable, setSubmittable] = useState(false);
   const [loadings, setLoadings] = useState<boolean[]>([]);
+
+  const {form, loadingModalHandler} = props;
 
   const enterLoading = (index: number) => {
     setLoadings((prevLoadings) => {
@@ -45,6 +52,7 @@ const SubmitButton = ({ form }: { form: FormInstance }) => {
       icon={<RocketOutlined />}
       size="large"
       onClick={(e)=> {
+        loadingModalHandler(true);
         e.stopPropagation();
         e.preventDefault();
         setSubmittable(false);

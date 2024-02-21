@@ -13,6 +13,7 @@ interface DataType {
   destination: string;
   author: string | null;
   source: string | null;
+  version: string | null;
 }
 
 type AuthVerifyResponse = {
@@ -69,7 +70,7 @@ type RawSpl = {
 };
 
 type SubmitStatus = {
-  statusCode: number;
+  statusCode: number | string;
   statusMessage: string;
 };
 
