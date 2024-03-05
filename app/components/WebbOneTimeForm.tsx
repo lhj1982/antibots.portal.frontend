@@ -24,6 +24,7 @@ import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
 import { useRouter } from "next/navigation";
 import LoadingModal from "./LoadingModal";
+import { oneTimeTimeValidation } from "@/lib/scheduleIntervalValidation";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -105,7 +106,6 @@ const WebbOneTimeForm = (props: SelfProps) => {
 
           res
             .then((res) => {
-              console.log("XXX: ", res);
               setSubmitStatus({
                 ...submitStatus,
                 statusCode: res.data.data.statusCode,
@@ -199,13 +199,13 @@ const WebbOneTimeForm = (props: SelfProps) => {
               : "Trigger Time"
           }
           name="scheduleIntervals"
-          rules={[{ required: true, message: "required" }]}
+          rules={[{ required: true, validator: oneTimeTimeValidation }]}
         >
           <Space>
             <Form.Item name="scheduleIntervals" noStyle>
               <Input
                 style={{ width: 360 }}
-                placeholder="Use Rate or Cron Expression"
+                placeholder="Use Cron Expression"
               ></Input>
             </Form.Item>
             <Tooltip title="Learn about Rate & Cron Expression">
