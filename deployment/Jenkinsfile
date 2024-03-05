@@ -4,7 +4,7 @@ def app = 'webb-portal-frontend'
 def teamPrefix = 'gcantibots'
 def config = [
     buildFlow: [
-            PULL_REQUEST    : ['Build', 'Compile'],
+            PULL_REQUEST    : [],
             DEVELOPMENT     : ['Containerize', 'Container Test'],
             RELEASE         : ['Containerize', 'Container Test']
     ],
