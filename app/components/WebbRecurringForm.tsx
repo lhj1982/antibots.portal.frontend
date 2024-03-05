@@ -24,6 +24,10 @@ import { SubmitStatus, WebbFormData } from "@/type";
 import SubmitButton from "./SubmitButton";
 import { useRouter } from "next/navigation";
 import LoadingModal from "./LoadingModal";
+import {
+  recurringAbsoluteValidation,
+  recurringRelativeValidation,
+} from "@/lib/scheduleIntervalValidation";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -50,8 +54,8 @@ const WebbRecurringForm = (props: SelfProps) => {
 
   const onOkHandler = () => {
     setShowSubmitModal(false);
-    router.push('/webbrulelist');
-  }
+    router.push("/webbrulelist");
+  };
 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
 
@@ -59,7 +63,7 @@ const WebbRecurringForm = (props: SelfProps) => {
 
   const loadingModalHandler = (isOpen: boolean) => {
     setShowLoadingModal(isOpen);
-  }
+  };
 
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
     statusCode: "",
@@ -216,13 +220,25 @@ const WebbRecurringForm = (props: SelfProps) => {
               : "Trigger Time"
           }
           name="scheduleIntervals"
-          rules={[{ required: true, message: "required" }]}
+          rules={[
+            {
+              required: true,
+              validator:
+                recurringForm.dateSearchType === "relative"
+                  ? recurringRelativeValidation
+                  : recurringAbsoluteValidation,
+            },
+          ]}
         >
           <Space>
             <Form.Item name="scheduleIntervals" noStyle>
               <Input
                 style={{ width: 360 }}
-                placeholder="Use Rate or Cron Expression"
+                placeholder={
+                  recurringForm.dateSearchType === "relative"
+                    ? "Use Rate Expression"
+                    : "Use Cron Expression"
+                }
               ></Input>
             </Form.Item>
             <Tooltip title="Learn about Rate & Cron Expression">
@@ -404,9 +420,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                         <Option value="payment_suspect_users">
                           payment_suspect_users
                         </Option>
-                        <Option value="test">
-                          test_namespace
-                        </Option>
+                        <Option value="test">test_namespace</Option>
                       </Select>
                     </Form.Item>
                     {recurringForm.webbSourceType === "ali-sls" && (
@@ -438,14 +452,14 @@ const WebbRecurringForm = (props: SelfProps) => {
                   cancelButtonProps={{ style: { display: "none" } }}
                   onOk={onOkHandler}
                   maskClosable={false}
-                  closeIcon = {null}
+                  closeIcon={null}
                 >
                   <SubmitResult
                     statusCode={submitStatus.statusCode}
                     statusMessage={submitStatus.statusMessage}
                   />
                 </Modal>
-                <LoadingModal isOpen = {showLoadingModal} />
+                <LoadingModal isOpen={showLoadingModal} />
               </div>
             )}
           </Form.List>
@@ -456,7 +470,7 @@ const WebbRecurringForm = (props: SelfProps) => {
             sm: { span: 16, offset: 10 },
           }}
         >
-          <SubmitButton form={form} loadingModalHandler = {loadingModalHandler}/>
+          <SubmitButton form={form} loadingModalHandler={loadingModalHandler} />
         </Form.Item>
         <Form.Item noStyle shouldUpdate>
           {() => (
