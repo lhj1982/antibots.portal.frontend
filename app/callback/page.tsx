@@ -9,7 +9,8 @@ import {
   OKTA_REDIRECT_URI,
   CODE_VERIFIER_KEY,
 } from "@/utils/constants";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { useUserStore } from "@/zustand/userStore";
 
 type TokenResponse = {
   access_token?: string;
@@ -25,6 +26,7 @@ export default function CallbackPage() {
   const router = useRouter();
   const { session, setSession } = useSession({ keepRenderIfNoSession: true });
   const [codeRequested, setCodeRequested] = useState(false);
+  const { setUsername, setEmail } = useUserStore();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -53,31 +55,19 @@ export default function CallbackPage() {
           body: params,
         });
         const body: TokenResponse = await response.json();
-        setCodeRequested(true);
 
-        if (body.access_token !== undefined && body.id_token !== undefined) {
-          const decodeIdToken = jwt.decode(body.id_token);
-
-          if (typeof decodeIdToken && typeof decodeIdToken === "object") {
-            window.localStorage.setItem("username", decodeIdToken?.name);
-          } else {
-            window.localStorage.setItem("username", "H i");
-          }
+        if (body.access_token && body.id_token){
+          const decodeIdToken  = jwt.decode(body.id_token);
+          const username = typeof decodeIdToken === "object" && decodeIdToken!== null?  decodeIdToken.name: "H i";
+          window.localStorage.setItem("username", username);
+          setUsername(username);
 
           const decodeAccessToken = jwt.decode(body.access_token);
-          if (
-            typeof decodeAccessToken ||
-            typeof decodeAccessToken === "object"
-          ) {
-            window.localStorage.setItem(
-              "email",
-              decodeAccessToken?.sub as string
-            );
-          } else {
-            window.localStorage.setItem("email", "User@nike.com");
-          }
+          const email =  typeof decodeAccessToken === "object" && decodeAccessToken!== null?  decodeAccessToken.sub as any: "User@nike.com";
+          setEmail(email);
+          window.localStorage.setItem("email", email);
           setSession(body.access_token);
-          router.replace("/");
+          router.replace('/');
           return;
         }
 
@@ -94,7 +84,7 @@ export default function CallbackPage() {
     };
 
     fetchCode();
-  }, [router, setSession]);
+  }, [router, setEmail, setSession, setUsername]);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black">

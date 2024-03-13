@@ -4,6 +4,7 @@ import Image from "next/image";
 import appLogo from "../../public/antibots.svg";
 import Avatar from "@mui/material/Avatar";
 import { Tooltip } from "react-tooltip";
+import { useUserStore } from "@/zustand/userStore";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -37,15 +38,19 @@ function stringAvatar(name: string) {
 }
 
 export default function NavBar() {
-  const [user, setUser] = useState("H i");
-  const [email, setEmail] = useState("");
+  const { username, email } = useUserStore((state) => ({
+    username: state.username,
+    email: state.email,
+  }));
 
-  if (typeof window !== "undefined") {
-    setTimeout(function () {
-      setUser(window.localStorage.getItem("username") as string);
-      setEmail(window.localStorage.getItem("email") as string);
-    }, 2000);
-  }
+  // 先从 Zustand 获取 username，如果条件匹配，再尝试从 localStorage 获取
+  const finalUsername =
+    username === "H i" ? localStorage.getItem("username") as string : username;
+
+  const finalEmail =
+    email === "User@nike.com" || ""
+      ? localStorage.getItem("email")
+      : email;
 
   return (
     <nav className="bg-light-black p-1 sticky top-0 drop-shadow-xl z-10">
@@ -54,9 +59,12 @@ export default function NavBar() {
           <Image className="h-16 w-16" src={appLogo} alt="app logo" />
           <h2 className="text-white text-xl"> ANTIBOT PORTAL </h2>
         </div>
-        <Avatar className="user-avatar h-10 w-10 " {...stringAvatar(user)} />
+        <Avatar
+          className="user-avatar h-10 w-10 "
+          {...stringAvatar(finalUsername)}
+        />
         <Tooltip anchorSelect=".user-avatar" place="left">
-          {email}
+          {finalEmail}
         </Tooltip>
       </div>
     </nav>
