@@ -32,7 +32,7 @@ export default function CallbackPage() {
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search.slice(1));
     const code = searchParams.get("code");
-    const codeVerifier = localStorage.getItem(CODE_VERIFIER_KEY);
+    const codeVerifier = window.localStorage.getItem(CODE_VERIFIER_KEY);
     const params = new URLSearchParams();
 
     if (!code || !codeVerifier) throw new Error("params missed");
