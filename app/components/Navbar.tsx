@@ -45,11 +45,11 @@ export default function NavBar() {
 
   // 先从 Zustand 获取 username，如果条件匹配，再尝试从 localStorage 获取
   const finalUsername =
-    username === "H i" ? localStorage.getItem("username") as string : username;
+    username === "H i" ? window.localStorage.getItem("username") as string : username;
 
   const finalEmail =
     email === "User@nike.com" || ""
-      ? localStorage.getItem("email")
+      ? window.localStorage.getItem("email")
       : email;
 
   return (
