@@ -32,10 +32,8 @@ export default function WebbRule() {
 
   let webbForm;
   if (isDefaultFormType) {
-    console.log("PPPP: ", isDefaultFormType);
     webbForm = <WebbRecurringForm isUpdate={false} formData={formData} />;
   } else {
-    console.log("PPPP: ", isDefaultFormType);
     webbForm = <WebbOneTimeForm isUpdate={false} formData={formData} />;
   }
 
