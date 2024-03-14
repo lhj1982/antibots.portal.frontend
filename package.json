@@ -44,5 +44,10 @@
     "sass": "^1.68.0",
     "tailwindcss": "latest",
     "typescript": "latest"
+  },
+  "eslintConfig": {
+    "globals": {
+      "window": true
+    }
   }
 }
