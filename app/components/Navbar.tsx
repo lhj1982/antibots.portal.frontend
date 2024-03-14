@@ -43,15 +43,18 @@ export default function NavBar() {
     email: state.email,
   }));
 
+  var finalUsername;
+  var finalEmail;
   // 先从 Zustand 获取 username，如果条件匹配，再尝试从 localStorage 获取
-  const finalUsername =
-    username === "H i" ? window.localStorage.getItem("username") as string : username;
+  if (typeof window !== "undefined") {
+    finalUsername =
+      username === "H i" ? window.localStorage.getItem("username") as string : username;
 
-  const finalEmail =
-    email === "User@nike.com" || ""
-      ? window.localStorage.getItem("email")
-      : email;
-
+    finalEmail =
+      email === "User@nike.com" || ""
+        ? window.localStorage.getItem("email")
+        : email;
+  }
   return (
     <nav className="bg-light-black p-1 sticky top-0 drop-shadow-xl z-10">
       <div className="flex items-center justify-between  sm:flex-row mx-12">
