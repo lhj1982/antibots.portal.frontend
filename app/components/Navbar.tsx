@@ -9,7 +9,7 @@ import { useUserStore } from "@/zustand/userStore";
 function stringToColor(string: string) {
   let hash = 0;
   let i;
-  if (string.length === 0) {
+  if (string.length === 0 ) {
     return "#F68475";
   }
   /* eslint-disable no-bitwise */
@@ -61,7 +61,7 @@ export default function NavBar() {
         </div>
         <Avatar
           className="user-avatar h-10 w-10 "
-          {...stringAvatar(finalUsername)}
+          {...stringAvatar(finalUsername == null? "H i": finalUsername)}
         />
         <Tooltip anchorSelect=".user-avatar" place="left">
           {finalEmail}
