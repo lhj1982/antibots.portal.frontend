@@ -13,9 +13,6 @@ import { useFormTypeStore } from "@/zustand/formTypeStore";
 
 const WebbRuleList = () => {
   const [webbRules, setWebbRules] = useState<Array<WebbRuleItem>>();
-
-  // const [recurringTypes, setRecurringTypes] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -33,7 +30,7 @@ const WebbRuleList = () => {
     setLoading(true);
     const apiData = await getWebbRuleList();
     const ruleList =
-    isDefaultFormType === true ?apiData.recurringPath : apiData.oneTimePath ;
+      isDefaultFormType === true ? apiData.recurringPath : apiData.oneTimePath;
     setWebbRules(ruleList);
     setLoading(false);
   }
@@ -113,7 +110,7 @@ const WebbRuleList = () => {
 
   return (
     <div>
-      <SwitchTab/>
+      <SwitchTab />
       <Table
         columns={columns}
         dataSource={webbRules}
