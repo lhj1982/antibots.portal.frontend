@@ -51,11 +51,11 @@ const WebbOneTimeForm = (props: SelfProps) => {
 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
 
-  const [showLoadingModal, setShowLoadingModal] = useState(false); 
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
 
   const loadingModalHandler = (isOpen: boolean) => {
     setShowLoadingModal(isOpen);
-  }
+  };
 
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({
     statusCode: "",
@@ -376,14 +376,14 @@ const WebbOneTimeForm = (props: SelfProps) => {
                   cancelButtonProps={{ style: { display: "none" } }}
                   onOk={onOkHandler}
                   maskClosable={false}
-                  closeIcon = {null}
+                  closeIcon={null}
                 >
                   <SubmitResult
                     statusCode={submitStatus.statusCode}
                     statusMessage={submitStatus.statusMessage}
                   />
                 </Modal>
-                <LoadingModal isOpen = {showLoadingModal} />
+                <LoadingModal isOpen={showLoadingModal} />
               </div>
             )}
           </Form.List>
@@ -394,7 +394,7 @@ const WebbOneTimeForm = (props: SelfProps) => {
             sm: { span: 16, offset: 10 },
           }}
         >
-          <SubmitButton form={form}  loadingModalHandler = {loadingModalHandler} />
+          <SubmitButton form={form} loadingModalHandler={loadingModalHandler} />
         </Form.Item>
         <Form.Item noStyle shouldUpdate>
           {() => (

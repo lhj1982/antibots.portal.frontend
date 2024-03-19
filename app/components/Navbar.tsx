@@ -1,5 +1,5 @@
 "use client";
-import React, { Component, useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import appLogo from "../../public/antibots.svg";
 import Avatar from "@mui/material/Avatar";
@@ -43,17 +43,21 @@ export default function NavBar() {
     email: state.email,
   }));
 
-  var finalUsername;
-  var finalEmail;
-  // 先从 Zustand 获取 username，如果条件匹配，再尝试从 localStorage 获取
-  if (typeof window !== "undefined") {
-    finalUsername =
-      username === "H i" ? window.localStorage.getItem("username") as string : username;
+  const {setEmail, setUsername} = useUserStore();
 
-    finalEmail =
-      email === "User@nike.com" || ""
-        ? window.localStorage.getItem("email")
-        : email;
+  // same as side menu: always use the value in state to control the component rather than using localstorage
+  // if state lost during the page refresh, update the state by using localstorage
+  if (typeof window !== "undefined") {
+    console.log("Nav Bar Username from LocalStorage: ", window.localStorage.getItem("username"));
+    if(username === "H i" && window.localStorage.getItem("username") !== null){
+      setUsername(window.localStorage.getItem("username") as string);
+    }
+    console.log("Nav Bar Username from state: ", username);
+    console.log("Nav Bar Email from LocalStorage: ", window.localStorage.getItem("email"));
+    if((email === "User@nike.com" || "") && window.localStorage.getItem("email") !== null){
+      setEmail(window.localStorage.getItem("email") as string);
+    }
+    console.log("Nav Bar Email from state: ", email);
   }
   return (
     <nav className="bg-light-black p-1 sticky top-0 drop-shadow-xl z-10">
@@ -64,10 +68,10 @@ export default function NavBar() {
         </div>
         <Avatar
           className="user-avatar h-10 w-10 "
-          {...stringAvatar(finalUsername == null? "H i": finalUsername)}
+          {...stringAvatar(username)}
         />
         <Tooltip anchorSelect=".user-avatar" place="left">
-          {finalEmail}
+          {email}
         </Tooltip>
       </div>
     </nav>

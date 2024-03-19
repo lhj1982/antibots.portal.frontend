@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
@@ -11,6 +10,8 @@ import {
 } from "@/utils/constants";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useUserStore } from "@/zustand/userStore";
+import fetchUserAccess from "@/lib/fetchUserAccess";
+import { useRoleStore } from "@/zustand/roleStore";
 
 type TokenResponse = {
   access_token?: string;
@@ -27,6 +28,7 @@ export default function CallbackPage() {
   const { session, setSession } = useSession({ keepRenderIfNoSession: true });
   const [codeRequested, setCodeRequested] = useState(false);
   const { setUsername, setEmail } = useUserStore();
+  const { setRole } =  useRoleStore();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -56,18 +58,27 @@ export default function CallbackPage() {
         });
         const body: TokenResponse = await response.json();
 
-        if (body.access_token && body.id_token){
-          const decodeIdToken  = jwt.decode(body.id_token);
-          const username = typeof decodeIdToken === "object" && decodeIdToken!== null?  decodeIdToken.name: "H i";
+        if (body.access_token && body.id_token) {
+          const decodeIdToken = jwt.decode(body.id_token);
+          const username =
+            typeof decodeIdToken === "object" && decodeIdToken !== null
+              ? decodeIdToken.name
+              : "H i";
           window.localStorage.setItem("username", username);
           setUsername(username);
 
           const decodeAccessToken = jwt.decode(body.access_token);
-          const email =  typeof decodeAccessToken === "object" && decodeAccessToken!== null?  decodeAccessToken.sub as any: "User@nike.com";
+          const email =
+            typeof decodeAccessToken === "object" && decodeAccessToken !== null
+              ? (decodeAccessToken.sub as any)
+              : "User@nike.com";
           setEmail(email);
           window.localStorage.setItem("email", email);
           setSession(body.access_token);
-          router.replace('/');
+          router.replace("/");
+          window.localStorage.removeItem(CODE_VERIFIER_KEY);
+          const userRole = await fetchUserAccess();
+          setRole(userRole);
           return;
         }
 
@@ -79,12 +90,10 @@ export default function CallbackPage() {
           throw new Error(e.message);
         }
       }
-
-      window.localStorage.removeItem(CODE_VERIFIER_KEY);
     };
 
     fetchCode();
-  }, [router, setEmail, setSession, setUsername]);
+  }, []);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black">
