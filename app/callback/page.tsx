@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
@@ -8,10 +9,7 @@ import {
   OKTA_REDIRECT_URI,
   CODE_VERIFIER_KEY,
 } from "@/utils/constants";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { useUserStore } from "@/zustand/userStore";
-import fetchUserAccess from "@/lib/fetchUserAccess";
-import { useRoleStore } from "@/zustand/roleStore";
+import jwt from "jsonwebtoken";
 
 type TokenResponse = {
   access_token?: string;
@@ -27,14 +25,12 @@ export default function CallbackPage() {
   const router = useRouter();
   const { session, setSession } = useSession({ keepRenderIfNoSession: true });
   const [codeRequested, setCodeRequested] = useState(false);
-  const { setUsername, setEmail } = useUserStore();
-  const { setRole } =  useRoleStore();
 
   useEffect(() => {
     const url = new URL(window.location.href);
     const searchParams = new URLSearchParams(url.search.slice(1));
     const code = searchParams.get("code");
-    const codeVerifier = window.localStorage.getItem(CODE_VERIFIER_KEY);
+    const codeVerifier = localStorage.getItem(CODE_VERIFIER_KEY);
     const params = new URLSearchParams();
 
     if (!code || !codeVerifier) throw new Error("params missed");
@@ -57,28 +53,31 @@ export default function CallbackPage() {
           body: params,
         });
         const body: TokenResponse = await response.json();
+        setCodeRequested(true);
 
-        if (body.access_token && body.id_token) {
+        if (body.access_token !== undefined && body.id_token !== undefined) {
           const decodeIdToken = jwt.decode(body.id_token);
-          const username =
-            typeof decodeIdToken === "object" && decodeIdToken !== null
-              ? decodeIdToken.name
-              : "H i";
-          window.localStorage.setItem("username", username);
-          setUsername(username);
+
+          if (typeof decodeIdToken && typeof decodeIdToken === "object") {
+            window.localStorage.setItem("username", decodeIdToken?.name);
+          } else {
+            window.localStorage.setItem("username", "H i");
+          }
 
           const decodeAccessToken = jwt.decode(body.access_token);
-          const email =
-            typeof decodeAccessToken === "object" && decodeAccessToken !== null
-              ? (decodeAccessToken.sub as any)
-              : "User@nike.com";
-          setEmail(email);
-          window.localStorage.setItem("email", email);
+          if (
+            typeof decodeAccessToken ||
+            typeof decodeAccessToken === "object"
+          ) {
+            window.localStorage.setItem(
+              "email",
+              decodeAccessToken?.sub as string
+            );
+          } else {
+            window.localStorage.setItem("email", "User@nike.com");
+          }
           setSession(body.access_token);
           router.replace("/");
-          window.localStorage.removeItem(CODE_VERIFIER_KEY);
-          const userRole = await fetchUserAccess();
-          setRole(userRole);
           return;
         }
 
@@ -90,10 +89,12 @@ export default function CallbackPage() {
           throw new Error(e.message);
         }
       }
+
+      window.localStorage.removeItem(CODE_VERIFIER_KEY);
     };
 
     fetchCode();
-  }, []);
+  }, [router, setSession]);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black">

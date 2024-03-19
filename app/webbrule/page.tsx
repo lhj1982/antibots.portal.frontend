@@ -5,13 +5,9 @@ import WebbRecurringForm from "@/app/components/WebbRecurringForm";
 import { Tooltip } from "react-tooltip";
 import SwitchTab from "../components/SwitchTab";
 import { WebbFormData } from "@/type";
-import { useFormTypeStore } from "@/zustand/formTypeStore";
 
 export default function WebbRule() {
-  const isDefaultFormType = useFormTypeStore(
-    (state) => state.isDefaultFormType
-  );
-
+  const [defaultFormType, setDefaultFormType] = useState(false);
   const [formData, setFormData] = useState<WebbFormData>({
     fileName: "",
     webbSourceType: "",
@@ -26,12 +22,16 @@ export default function WebbRule() {
         destination: [],
         action: "",
         nameSpace: "",
-      },
+      }
     ],
   });
 
+  function handleSetDefaultFormType(isRecurring: boolean) {
+    setDefaultFormType(isRecurring);
+  }
+
   let webbForm;
-  if (isDefaultFormType) {
+  if (defaultFormType) {
     webbForm = <WebbRecurringForm isUpdate={false} formData={formData} />;
   } else {
     webbForm = <WebbOneTimeForm isUpdate={false} formData={formData} />;
@@ -39,10 +39,13 @@ export default function WebbRule() {
 
   return (
     <div className="w-full h-full bg-gray-100">
-      <SwitchTab />
+      <SwitchTab
+        taskType={defaultFormType}
+        setTaskType={handleSetDefaultFormType}
+      />
       <div className="flex justify-center">{webbForm}</div>
       <Tooltip anchorSelect=".type-switch" place="right">
-        {isDefaultFormType ? "Recurring" : "One Time"}
+        {defaultFormType ? "Recurring" : "One Time"}
       </Tooltip>
     </div>
   );

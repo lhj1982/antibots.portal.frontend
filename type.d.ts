@@ -106,9 +106,3 @@ type WebbGlobalFields = {
   dateSearchType: string;
   scheduleIntervals: string;
 };
-
-enum Role {
-  Admin = "Admin",
-  Editor = "Editor",
-  User = "User",
-};

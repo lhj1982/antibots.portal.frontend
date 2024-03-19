@@ -1,5 +1,4 @@
 import { BACKEND_HOST, WEBBRULE_GETLIST_PATH } from "@/utils/constants";
-import { useUserStore } from "@/zustand/userStore";
 import axios from "axios";
 
 export default async function getWebbRuleList() {
