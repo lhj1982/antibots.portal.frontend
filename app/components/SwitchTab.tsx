@@ -4,11 +4,12 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 import { Tooltip } from "react-tooltip";
+import { useFormTypeStore } from "@/zustand/formTypeStore";
 
-type SelfProps = {
-    taskType: boolean,
-    setTaskType: (taskType: boolean) => void,
-};
+// type SelfProps = {
+//     taskType: boolean,
+//     setTaskType: (taskType: boolean) => void,
+// };
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -55,18 +56,20 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 
  
-const SwitchTab = (props: SelfProps) => {
+const SwitchTab = () => {
 
-    const {taskType, setTaskType} = props;
+   const  {setFormType} = useFormTypeStore();
+   const isDefaultFormType = useFormTypeStore(state => state.isDefaultFormType);
+  //  const [checked, setChecked] = useState(isDefaultFormType);
 
     return(
         <div className="w-full h-20 bg-slate-200 flex">
         <FormGroup className="pt-4 pl-4">
           <FormControlLabel
             className="type-switch"
-            control={<MaterialUISwitch sx={{ m: 1 }} />}
+            control={<MaterialUISwitch sx={{ m: 1 }}  checked={isDefaultFormType}/>}
             onChange={(e: any) => {
-                setTaskType(e.target.checked);
+                setFormType(e.target.checked);
             }}
             label={<h1 className="text-black">Change Task Type</h1>}
           />

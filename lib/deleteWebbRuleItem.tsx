@@ -1,4 +1,5 @@
 import { BACKEND_HOST, WEBBRULE_DELETE_PATH } from "@/utils/constants";
+import { useUserStore } from "@/zustand/userStore";
 import axios, { CancelTokenSource } from "axios";
 
 export default async function deleteWebbRuleItem(fileName: string) {
