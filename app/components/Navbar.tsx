@@ -48,16 +48,16 @@ export default function NavBar() {
   // same as side menu: always use the value in state to control the component rather than using localstorage
   // if state lost during the page refresh, update the state by using localstorage
   if (typeof window !== "undefined") {
-    console.log("Nav Bar Username from LocalStorage: ", window.localStorage.getItem("username"));
+    // console.log("Nav Bar Username from LocalStorage: ", window.localStorage.getItem("username"));
     if(username === "H i" && window.localStorage.getItem("username") !== null){
       setUsername(window.localStorage.getItem("username") as string);
     }
-    console.log("Nav Bar Username from state: ", username);
-    console.log("Nav Bar Email from LocalStorage: ", window.localStorage.getItem("email"));
+    // console.log("Nav Bar Username from state: ", username);
+    // console.log("Nav Bar Email from LocalStorage: ", window.localStorage.getItem("email"));
     if((email === "User@nike.com" || "") && window.localStorage.getItem("email") !== null){
       setEmail(window.localStorage.getItem("email") as string);
     }
-    console.log("Nav Bar Email from state: ", email);
+    // console.log("Nav Bar Email from state: ", email);
   }
   return (
     <nav className="bg-light-black p-1 sticky top-0 drop-shadow-xl z-10">
