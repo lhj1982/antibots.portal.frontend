@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import axios from "axios";
 import { GeneratedSpl } from "@/type";
 import { BACKEND_HOST, WEBBRULE_UPLOAD_PATH } from "@/utils/constants";
-import { useUserStore } from "@/zustand/userStore";
 
 function generateData(data: any) {
   const {

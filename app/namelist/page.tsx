@@ -8,7 +8,6 @@ import { DataType } from "@/type";
 import { BACKEND_HOST, NAMELIST_PATH } from "@/utils/constants";
 import dayjs from "dayjs";
 import SearchForm from "../components/SearchForm";
-import { useUserStore } from "@/zustand/userStore";
 
 type DataIndex = keyof DataType;
 
