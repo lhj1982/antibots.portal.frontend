@@ -5,6 +5,7 @@ import appLogo from "../../public/antibots.svg";
 import Avatar from "@mui/material/Avatar";
 import { Tooltip } from "react-tooltip";
 import { useUserStore } from "@/zustand/userStore";
+import { LOCAL_STORAGE_EMAIL, LOCAL_STORAGE_USERNAME } from "@/utils/constants";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -48,14 +49,14 @@ export default function NavBar() {
   // same as side menu: always use the value in state to control the component rather than using localstorage
   // if state lost during the page refresh, update the state by using localstorage
   if (typeof window !== "undefined") {
-    // console.log("Nav Bar Username from LocalStorage: ", window.localStorage.getItem("username"));
-    if(username === "H i" && window.localStorage.getItem("username") !== null){
-      setUsername(window.localStorage.getItem("username") as string);
+    // console.log("Nav Bar Username from LocalStorage: ", window.localStorage.getItem(LOCAL_STORAGE_USERNAME));
+    if(username === "H i" && window.localStorage.getItem(LOCAL_STORAGE_USERNAME) !== null){
+      setUsername(window.localStorage.getItem(LOCAL_STORAGE_USERNAME) as string);
     }
     // console.log("Nav Bar Username from state: ", username);
-    // console.log("Nav Bar Email from LocalStorage: ", window.localStorage.getItem("email"));
-    if((email === "User@nike.com" || "") && window.localStorage.getItem("email") !== null){
-      setEmail(window.localStorage.getItem("email") as string);
+    // console.log("Nav Bar Email from LocalStorage: ", window.localStorage.getItem(LOCAL_STORAGE_EMAIL));
+    if((email === "User@nike.com" || "") && window.localStorage.getItem(LOCAL_STORAGE_EMAIL) !== null){
+      setEmail(window.localStorage.getItem(LOCAL_STORAGE_EMAIL) as string);
     }
     // console.log("Nav Bar Email from state: ", email);
   }

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import axios from "axios";
 import { GeneratedSpl } from "@/type";
-import { BACKEND_HOST, WEBBRULE_UPLOAD_PATH } from "@/utils/constants";
+import { BACKEND_HOST, LOCAL_STORAGE_EMAIL, WEBBRULE_UPLOAD_PATH } from "@/utils/constants";
 import { useUserStore } from "@/zustand/userStore";
 
 function generateData(data: any) {
@@ -130,7 +130,7 @@ export default async function handleSubmitData(
         Authorization: `Bearer ${window.localStorage.getItem("sess")}`,
         FileName: fileName,
         "Search-Type": searchType,
-        User: `${window.localStorage.getItem("email")}`,
+        User: `${window.localStorage.getItem(LOCAL_STORAGE_EMAIL)}`,
       },
     }
   );

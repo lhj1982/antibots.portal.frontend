@@ -7,6 +7,8 @@ import {
   OKTA_CLIENT_ID,
   OKTA_REDIRECT_URI,
   CODE_VERIFIER_KEY,
+  LOCAL_STORAGE_USERNAME,
+  LOCAL_STORAGE_EMAIL,
 } from "@/utils/constants";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useUserStore } from "@/zustand/userStore";
@@ -28,7 +30,7 @@ export default function CallbackPage() {
   const { session, setSession } = useSession({ keepRenderIfNoSession: true });
   const [codeRequested, setCodeRequested] = useState(false);
   const { setUsername, setEmail } = useUserStore();
-  const { setRole } =  useRoleStore();
+  const { setRole } = useRoleStore();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -37,7 +39,10 @@ export default function CallbackPage() {
     const codeVerifier = window.localStorage.getItem(CODE_VERIFIER_KEY);
     const params = new URLSearchParams();
 
-    if (!code || !codeVerifier) throw new Error("params missed");
+    if (!code || !codeVerifier)
+      throw new Error(
+        "Key parameters that used to request okta token is missing, the token request will be rejected."
+      );
 
     params.set("code", code);
     params.set(CODE_VERIFIER_KEY, codeVerifier);
@@ -64,7 +69,7 @@ export default function CallbackPage() {
             typeof decodeIdToken === "object" && decodeIdToken !== null
               ? decodeIdToken.name
               : "H i";
-          window.localStorage.setItem("username", username);
+          window.localStorage.setItem(LOCAL_STORAGE_USERNAME, username);
           setUsername(username);
 
           const decodeAccessToken = jwt.decode(body.access_token);
@@ -73,7 +78,7 @@ export default function CallbackPage() {
               ? (decodeAccessToken.sub as any)
               : "User@nike.com";
           setEmail(email);
-          window.localStorage.setItem("email", email);
+          window.localStorage.setItem(LOCAL_STORAGE_EMAIL, email);
           setSession(body.access_token);
           router.replace("/");
           window.localStorage.removeItem(CODE_VERIFIER_KEY);

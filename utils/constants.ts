@@ -17,3 +17,5 @@ export const WEBBRULE_GETLIST_PATH =
 export const WEBBRULE_UPLOAD_PATH =
   process.env.NEXT_PUBLIC_WEBBRULE_UPLOAD_PATH || "";
 export const USER_ACCESS_PATH = process.env.NEXT_PUBLIC_USER_ACCESS_PATH || "";
+export const LOCAL_STORAGE_USERNAME = "username"
+export const LOCAL_STORAGE_EMAIL = "email"

@@ -1,12 +1,11 @@
-import { BACKEND_HOST, WEBBRULE_DELETE_PATH } from "@/utils/constants";
-import { useUserStore } from "@/zustand/userStore";
+import { BACKEND_HOST, LOCAL_STORAGE_EMAIL, WEBBRULE_DELETE_PATH } from "@/utils/constants";
 import axios, { CancelTokenSource } from "axios";
 
 export default async function deleteWebbRuleItem(fileName: string) {
   let config = {
     headers: {
       Authorization: `Bearer ${window.localStorage.getItem("sess")}`,
-      User: `${window.localStorage.getItem("email")}`,
+      User: `${window.localStorage.getItem(LOCAL_STORAGE_EMAIL)}`,
       FileName: fileName,
     },
   };
