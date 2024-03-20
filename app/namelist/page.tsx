@@ -5,9 +5,10 @@ import { FloatButton, Table, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import { DataType } from "@/type";
-import { BACKEND_HOST, NAMELIST_PATH } from "@/utils/constants";
+import { BACKEND_HOST, LOCAL_STORAGE_EMAIL, NAMELIST_PATH } from "@/utils/constants";
 import dayjs from "dayjs";
 import SearchForm from "../components/SearchForm";
+import { useUserStore } from "@/zustand/userStore";
 
 type DataIndex = keyof DataType;
 
@@ -46,7 +47,7 @@ const NameList: React.FC = () => {
     let config = {
       headers: {
         Authorization: `Bearer ${window.localStorage.getItem("sess")}`,
-        User: `${window.localStorage.getItem("email")}`,
+        User: `${window.localStorage.getItem(LOCAL_STORAGE_EMAIL)}`,
       },
     };
     try {

@@ -1,0 +1,40 @@
+{
+  "roles": {
+    "Admin": {
+      "access": [
+        {
+          "name": "Name List",
+          "path": "/namelist"
+        },
+        {
+          "name": "Webb Rule List",
+          "path": "/webbrulelist"
+        },
+        {
+          "name": "Create Webb Rule",
+          "path": "/webbrule"
+        }
+      ]
+    },
+    "Editor": {
+      "access": [
+        {
+          "name": "Name List",
+          "path": "/namelist"
+        },
+        {
+          "name": "Webb Rule List",
+          "path": "/webbrulelist"
+        }
+      ]
+    },
+    "User": {
+      "access": [
+        {
+          "name": "Name List",
+          "path": "/namelist"
+        }
+      ]
+    }
+  }
+}

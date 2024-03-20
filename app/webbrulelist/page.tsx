@@ -7,13 +7,12 @@ import SwitchTab from "../components/SwitchTab";
 import { Tooltip } from "react-tooltip";
 import getWebbRuleItem from "@/lib/getWebbRuleItem";
 import deleteWebbRuleItem from "@/lib/deleteWebbRuleItem";
-import axios from "axios";
 import Link from "next/link";
 import { WebbRuleItem } from "@/type";
+import { useFormTypeStore } from "@/zustand/formTypeStore";
 
 const WebbRuleList = () => {
   const [webbRules, setWebbRules] = useState<Array<WebbRuleItem>>();
-  const [recurringTypes, setRecurringTypes] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -22,19 +21,18 @@ const WebbRuleList = () => {
   );
   const [selectedDeletionFile, setSelectedDeletionFile] = useState<string>();
   const [isCancelDisabled, setIsCancelDisabled] = useState(false);
-  
 
-  async function setData(recurringTypes: boolean) {
+  const isDefaultFormType = useFormTypeStore(
+    (state) => state.isDefaultFormType
+  );
+
+  async function setData(isDefaultFormType: boolean) {
     setLoading(true);
     const apiData = await getWebbRuleList();
     const ruleList =
-      recurringTypes === false ? apiData.oneTimePath : apiData.recurringPath;
+      isDefaultFormType === true ? apiData.recurringPath : apiData.oneTimePath;
     setWebbRules(ruleList);
     setLoading(false);
-  }
-
-  function handleSetRecurringTypes(type: boolean) {
-    setRecurringTypes(type);
   }
 
   const showModal = () => {
@@ -46,7 +44,9 @@ const WebbRuleList = () => {
     setIsCancelDisabled(true);
     setConfirmLoading(true);
     setTimeout(async () => {
-      const fileType = recurringTypes ? "schedule-recurring" : "schedule-onetime";
+      const fileType = isDefaultFormType
+        ? "schedule-recurring"
+        : "schedule-onetime";
       const param = fileType + "/" + selectedDeletionFile;
       const response = await deleteWebbRuleItem(param);
       //console.log("delete response: ", response);
@@ -64,8 +64,8 @@ const WebbRuleList = () => {
   };
 
   useEffect(() => {
-    setData(recurringTypes);
-  }, [recurringTypes, selectedDeletionFile]);
+    setData(isDefaultFormType);
+  }, [isDefaultFormType, selectedDeletionFile]);
 
   const columns: ColumnsType<WebbRuleItem> = [
     {
@@ -89,9 +89,9 @@ const WebbRuleList = () => {
       render: (_, record) => (
         <Space size="middle" className="text-main-blue hover:text-light-blue">
           <Link
-            href={`/webbrulelist/${recurringTypes ? "schedule-recurring" : "schedule-onetime"}_${
-              record.fileName
-            }`}
+            href={`/webbrulelist/${
+              isDefaultFormType ? "schedule-recurring" : "schedule-onetime"
+            }_${record.fileName}`}
           >
             Update
           </Link>
@@ -110,10 +110,7 @@ const WebbRuleList = () => {
 
   return (
     <div>
-      <SwitchTab
-        setTaskType={handleSetRecurringTypes}
-        taskType={recurringTypes}
-      />
+      <SwitchTab />
       <Table
         columns={columns}
         dataSource={webbRules}
@@ -121,7 +118,7 @@ const WebbRuleList = () => {
         loading={loading}
       />
       <Tooltip anchorSelect=".type-switch" place="right">
-        {recurringTypes ? "Recurring" : "OneTime"}
+        {isDefaultFormType ? "Recurring" : "One Time"}
       </Tooltip>
       <Modal
         title="Please Confirm"
