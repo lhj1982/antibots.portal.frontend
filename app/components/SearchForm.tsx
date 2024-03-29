@@ -54,7 +54,7 @@ const SearchForm = (props: SelfProps) => {
             initialValues={{ items: [{}] }}
             className="w-full"
             onFinish={(values) => {
-              console.log(values);
+              // console.log(values);
               const query = handleSearchQuery(values);
               handleSearchProps(query);
             }}
