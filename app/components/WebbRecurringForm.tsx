@@ -390,6 +390,7 @@ const WebbRecurringForm = (props: SelfProps) => {
                       >
                         <Option value="fairness">fairness</Option>
                         <Option value="edgeKV">edgeKV</Option>
+                        <Option value="athena">athena</Option>
                       </Select>
                     </Form.Item>
                     <Form.Item
