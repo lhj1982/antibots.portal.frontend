@@ -12,12 +12,12 @@ export default async function fetchUserAccess() {
     .get(`${BACKEND_HOST}/${USER_ACCESS_PATH}`, config)
     .then((response) => {
       let { data } = response.data;
-      console.log("User role: ", data.name);
+      // console.log("User role: ", data.name);
       const arr = data.name.split(".");
       return arr[arr.length - 1];
     })
     .catch((err) => {
-      console.log("Fetch user role error: ", err);
+      // console.log("Fetch user role error: ", err);
       throw err;
     });
 }
