@@ -345,6 +345,9 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         <Option value="payment_suspect_users">
                           payment_suspect_users
                         </Option>
+                        <Option value="venom_suspect_iplists">
+                          venom_suspect_iplists
+                        </Option>
                         <Option value="test">test_namespace</Option>
                       </Select>
                     </Form.Item>
