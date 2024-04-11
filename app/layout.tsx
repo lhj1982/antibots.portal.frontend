@@ -30,7 +30,9 @@ export default function RootLayout({
               <div className="w-2/12 overflow-auto">
                 <SideMenu />
               </div>
-              <div className="w-full ">{children}</div>
+              <div className="flex-grow overflow-x-auto">
+                <div className="min-w-full">{children}</div>
+              </div>
             </div>
           </AuthWrapper>
         </StyledComponentsRegistry>
