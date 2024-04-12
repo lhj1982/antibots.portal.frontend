@@ -25,6 +25,7 @@ import SubmitButton from "./SubmitButton";
 import { useRouter } from "next/navigation";
 import LoadingModal from "./LoadingModal";
 import { oneTimeTimeValidation } from "@/lib/scheduleIntervalValidation";
+import fetchNameSpaces from "@/lib/fetchNameSpaces";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -62,6 +63,8 @@ const WebbOneTimeForm = (props: SelfProps) => {
     statusMessage: "Something Went wrong",
   });
 
+  const [nameSpace, setNameSpace] = useState<string[]>([]);
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current >= moment().endOf("day");
   };
@@ -74,6 +77,11 @@ const WebbOneTimeForm = (props: SelfProps) => {
   useEffect(() => {
     setOneTimeForm(formData);
     form.setFieldsValue(formData);
+    const getNameSpace = async () => {
+      const nameSpaceList = await fetchNameSpaces();
+      setNameSpace(nameSpaceList);
+    };
+    getNameSpace();
   }, [form, formData]);
 
   return (
@@ -336,19 +344,11 @@ const WebbOneTimeForm = (props: SelfProps) => {
                         placeholder="Select an edgekv name space"
                         allowClear
                       >
-                        <Option value="buy_suspect_users">
-                          buy_suspect_users
-                        </Option>
-                        <Option value="order_suspect_users">
-                          order_suspect_users
-                        </Option>
-                        <Option value="payment_suspect_users">
-                          payment_suspect_users
-                        </Option>
-                        <Option value="venom_suspect_iplists">
-                          venom_suspect_iplists
-                        </Option>
-                        <Option value="test">test_namespace</Option>
+                        {nameSpace.map((item, index) => (
+                          <Option key={index} value={item}>
+                            {item.replace(/_/g, " ")}
+                          </Option>
+                        ))}
                       </Select>
                     </Form.Item>
                     {oneTimeForm.webbSourceType === "ali-sls" && (

@@ -28,6 +28,7 @@ import {
   recurringAbsoluteValidation,
   recurringRelativeValidation,
 } from "@/lib/scheduleIntervalValidation";
+import fetchNameSpaces from "@/lib/fetchNameSpaces";
 
 type SelfProps = {
   isUpdate: boolean;
@@ -61,6 +62,8 @@ const WebbRecurringForm = (props: SelfProps) => {
 
   const [showLoadingModal, setShowLoadingModal] = useState(false);
 
+  const [nameSpace, setNameSpace] = useState<string[]>([]);
+
   const loadingModalHandler = (isOpen: boolean) => {
     setShowLoadingModal(isOpen);
   };
@@ -81,6 +84,11 @@ const WebbRecurringForm = (props: SelfProps) => {
       setTimeType(formData.timeType);
     }
     form.setFieldsValue(formData);
+    const getNameSpace = async () => {
+      const nameSpaceList = await fetchNameSpaces();
+      setNameSpace(nameSpaceList);
+    };
+    getNameSpace();
   }, [form, formData]);
 
   const absoluteTimeComponent = (
@@ -412,19 +420,11 @@ const WebbRecurringForm = (props: SelfProps) => {
                         placeholder="Select an edgekv name space"
                         allowClear
                       >
-                        <Option value="buy_suspect_users">
-                          buy_suspect_users
-                        </Option>
-                        <Option value="order_suspect_users">
-                          order_suspect_users
-                        </Option>
-                        <Option value="payment_suspect_users">
-                          payment_suspect_users
-                        </Option>
-                        <Option value="venom_suspect_iplists">
-                          venom_suspect_iplists
-                        </Option>
-                        <Option value="test">test_namespace</Option>
+                        {nameSpace.map((item, index) => (
+                          <Option key={index} value={item}>
+                            {item.replace(/_/g, " ")}
+                          </Option>
+                        ))}
                       </Select>
                     </Form.Item>
                     {recurringForm.webbSourceType === "ali-sls" && (
