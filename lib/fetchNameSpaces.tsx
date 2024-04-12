@@ -2,6 +2,7 @@ import {
   BACKEND_HOST,
   LOCAL_STORAGE_EMAIL,
   NAMELIST_PATH,
+  NAMESPACE_PATH,
 } from "@/utils/constants";
 import axios from "axios";
 
@@ -13,10 +14,9 @@ export default async function fetchNameSpaces() {
     },
   };
   return axios
-    .get(`${BACKEND_HOST}/${NAMELIST_PATH}`, config)
+    .get(`${BACKEND_HOST}/${NAMESPACE_PATH}`, config)
     .then((response) => {
-      const data: string[] = response.data;
-      console.log("NameSpace: ", data);
+      const data: string[] = response.data.data;
       return data;
     })
     .catch((err) => {
