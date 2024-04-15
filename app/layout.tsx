@@ -22,15 +22,17 @@ export default function RootLayout({
       <Head>
         <link rel="icon" href="../../public/antibots.svg" />
       </Head>
-      <body className="bg-white flex flex-col">
+      <body className="bg-white flex flex-col h-screen overflow-hidden">
         <StyledComponentsRegistry>
           <AuthWrapper>
             <NavBar />
-            <div className="flex flex-grow overflow-y-auto">
+            <div className="flex flex-1 overflow-hidden">
               <div className="w-2/12 overflow-auto">
                 <SideMenu />
               </div>
-              <div className="w-full ">{children}</div>
+              <div className="flex-1 overflow-auto">
+                <div className="min-w-full">{children}</div>
+              </div>
             </div>
           </AuthWrapper>
         </StyledComponentsRegistry>
