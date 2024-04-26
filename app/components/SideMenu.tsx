@@ -90,8 +90,8 @@ const SideMenu = () => {
                   <Link href={subItem.path} key={subIndex}>
                     <div className="flex h-10 pl-2">
                       <h2
-                        className={`m-auto text-zinc-500 hover:text-white ${
-                          currentPathname === subItem.path ? "text-red-200 animate-bounce" : "text-zinc-500"
+                        className={`m-auto  hover:text-white ${
+                          currentPathname == subItem.path ? "text-red-200" : "text-zinc-500"
                         }`}
                       >
                         {` - ${subItem.name}`}
