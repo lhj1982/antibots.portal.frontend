@@ -4,15 +4,36 @@
       "access": [
         {
           "name": "Name List",
-          "path": "/namelist"
+          "path": "/namelist",
+          "children" : []
         },
         {
           "name": "Webb Rule List",
-          "path": "/webbrulelist"
+          "path": "/webbrulelist",
+          "children" : []
         },
         {
           "name": "Create Webb Rule",
-          "path": "/webbrule"
+          "path": "/webbrule",
+          "children" : []
+        },
+        {
+          "name": "Bots Report",
+          "path": "/botsreport",
+          "children": [
+            {
+              "name": "Bar Chart",
+              "path": "/botsreport/barchart"
+            },
+            {
+              "name": "Pie Chart",
+              "path": "/botsreport/piechart"
+            },
+            {
+              "name": "Scatter Map",
+              "path":"/botsreport/scattermap"
+            }
+          ]
         }
       ]
     },
@@ -20,11 +41,13 @@
       "access": [
         {
           "name": "Name List",
-          "path": "/namelist"
+          "path": "/namelist",
+          "children" : []
         },
         {
           "name": "Webb Rule List",
-          "path": "/webbrulelist"
+          "path": "/webbrulelist",
+          "children" : []
         }
       ]
     },
@@ -32,7 +55,8 @@
       "access": [
         {
           "name": "Name List",
-          "path": "/namelist"
+          "path": "/namelist",
+          "children" : []
         }
       ]
     }
