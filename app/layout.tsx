@@ -31,7 +31,7 @@ export default function RootLayout({
                 <SideMenu />
               </div>
               <div className="flex-1 overflow-auto">
-                <div className="min-w-full">{children}</div>
+                <div className="min-w-full h-full">{children}</div>
               </div>
             </div>
           </AuthWrapper>

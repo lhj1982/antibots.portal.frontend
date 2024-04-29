@@ -1,5 +1,12 @@
-const ScatterMap = () => {
-    return <h1>Scatter Map</h1>
-}
+import ScatterMap from "@/app/components/ScatterMap";
+import SearchForm from "@/app/components/SearchForm";
 
-export default ScatterMap;
+const ScatterMapPage = () => {
+  return (
+    <div className="w-full h-full">
+      <ScatterMap />
+    </div>
+  );
+};
+
+export default ScatterMapPage;
