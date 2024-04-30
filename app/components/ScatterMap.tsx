@@ -20,26 +20,19 @@ const ScatterMap = () => {
   });
 
   useEffect(() => {
-    let active = true;
     const fetchData = async () => {
       try {
         const res = await launchEntryLocationData();
-        if (active) {
-          setData(res);
-          console.log("DATA: ", data);
-        }
+        setData(res);
       } catch (err) {
-        console.error("An error occurred while fetching geo data:", err);
+        console.error("Error fetching geo data:", err);
       }
     };
     fetchData();
-    return () => {
-      active = false;
-    };
-  });
+  }, []);
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (data.length > 0 && isLoaded) {
       const geoCoordMap: GeoCoordMap = {
         海门: [121.15, 31.89],
         鄂尔多斯: [109.781327, 39.608266],
@@ -345,7 +338,7 @@ const ScatterMap = () => {
         initChart();
       }
     }
-  }, [isLoaded]);
+  }, [isLoaded, data]);
 
   return <div ref={chartRef} style={{ width: "100%", height: "100%" }} />;
 };
