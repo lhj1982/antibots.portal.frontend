@@ -258,7 +258,7 @@ const ScatterMap = () => {
         animation: true,
         series: [
           {
-            name: "PM2.5",
+            name: "Entry Count",
             type: "scatter",
             coordinateSystem: "gmap",
             data: convertData(data),

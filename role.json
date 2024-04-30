@@ -22,10 +22,6 @@
           "path": "/botsreport",
           "children": [
             {
-              "name": "Bar Chart",
-              "path": "/botsreport/barchart"
-            },
-            {
               "name": "Pie Chart",
               "path": "/botsreport/piechart"
             },

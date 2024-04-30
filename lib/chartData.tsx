@@ -11,3 +11,18 @@ export const launchEntryLocationData = async () => {
         console.error('Error fetching data:', error);
       }
 }
+
+export const launchEntryBarChartData = async ( num: number ) => {
+    try {
+        const response = await axios.get('http://localhost:8000/chart_data/2');
+        const { city, count} = response.data;
+        console.log('Bar Chart city:', city.slice(0,num));
+        console.log('Bar Chart count:', count.slice(0,num));
+        return {
+            city: city.slice(0, num),
+            count: count.slice(0, num)
+          };
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+}
