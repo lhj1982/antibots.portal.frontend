@@ -20,3 +20,4 @@ export const USER_ACCESS_PATH = process.env.NEXT_PUBLIC_USER_ACCESS_PATH || "";
 export const LOCAL_STORAGE_USERNAME = "username";
 export const LOCAL_STORAGE_EMAIL = "email";
 export const NAMESPACE_PATH = process.env.NEXT_PUBLIC_NAMESPACE_PATH || "";
+export const JSON_SERVER_PATH = process.env.NEXT_JSON_SERVER_PATH || "";

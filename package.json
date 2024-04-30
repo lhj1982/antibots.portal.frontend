@@ -44,6 +44,7 @@
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "json-server": "^1.0.0-alpha.23",
     "postcss": "latest",
     "sass": "^1.68.0",
     "tailwindcss": "latest",
