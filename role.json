@@ -28,6 +28,10 @@
             {
               "name": "Scatter Map",
               "path":"/botsreport/scattermap"
+            },
+            {
+              "name": "Launch Funnel",
+              "path":"/botsreport/funnel"
             }
           ]
         }
