@@ -6,9 +6,8 @@ type LaunchIDStore = {
 };
 
 export const useLaunchIDStore = create<LaunchIDStore>((set) => ({
-  launchId: "",
+  launchId: "537024e5-791f-372d-9565-4f49e4e49db0",
   setLaunchId: (launchId) => {
     set(() => ({ launchId }));
-    console.log("STATE launchId UPDATED!");
   },
 }));

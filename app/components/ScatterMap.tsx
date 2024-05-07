@@ -75,7 +75,19 @@ const ScatterMap = () => {
             type: "scatter",
             coordinateSystem: "gmap",
             data: convertData(data),
-            symbolSize: (val: any) => val[2] / 1000,
+            symbolSize: (val: any) => {
+              if( val[2] >= 100000) {
+                return val[2] / 1000 /2;
+               }else if (val[2] >= 10000 && val[2] < 100000) {
+                return val[2]/ 1000;
+              } else if (val[2] >= 1000 && val[2] < 10000) {
+                return val[2] / 100;
+              } else if (val[2] >= 100 && val[2] < 1000) {
+                return val[2] / 10;
+              } else {
+                return val[2]* 3;
+              }
+            },
             encode: {
               value: 2,
               lng: 0,
@@ -109,7 +121,19 @@ const ScatterMap = () => {
                 )
                 .slice(0, 6)
             ),
-            symbolSize: (val: any) => val[2] / 1000,
+            symbolSize: (val: any) => {
+              if( val[2] >= 100000) {
+                return val[2] / 1000 /2;
+               }else if (val[2] >= 10000 && val[2] < 100000) {
+                return val[2]/ 1000;
+              } else if (val[2] >= 1000 && val[2] < 10000) {
+                return val[2] / 100;
+              } else if (val[2] >= 100 && val[2] < 1000) {
+                return val[2] / 10;
+              } else {
+                return val[2] * 2;
+              }
+            },
             encode: {
               value: 2,
               lng: 0,

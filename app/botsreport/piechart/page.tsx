@@ -2,23 +2,18 @@
 import BarChart from "@/app/components/BarChart";
 import LaunchChartForm from "@/app/components/LaunchChartForm";
 import PieChart from "@/app/components/PieChart";
-import { launchEntryLocationData } from "@/lib/chartData";
-import { chartFormData } from "@/type";
-import { useEffect, useState } from "react";
+import { useLaunchIDStore } from "@/zustand/launchIDStore";
+import { useChartTypeStore } from "@/zustand/chartTypeStore";
 
 
 const PieChartPage = () => {
-    const [formData, setFormData] = useState<chartFormData>({launchId:'',chartType:"pie"});
-
-    const handleChartProps = (input: chartFormData) => {
-        setFormData(input);
-    }
-
+    const { setLaunchId } = useLaunchIDStore();
+    const chartTypeState = useChartTypeStore((state)=>state.isDefaultChartType);
   return (
     <div className="w-full h-full">
-      <LaunchChartForm handleChartProps = {handleChartProps} launchIdOnly={false}/>
-      { formData?.chartType === "pie" && <PieChart/>}
-      { formData?.chartType === "bar" && <BarChart/>}
+      <LaunchChartForm handleStateUpdate={setLaunchId} launchIdOnly={false}/>
+      { chartTypeState == true && <PieChart/>}
+      { chartTypeState == false && <BarChart/>}
     </div>
   );
 };

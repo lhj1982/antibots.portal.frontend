@@ -2,12 +2,15 @@
 import ReactECharts from "echarts-for-react";
 import React, { useEffect, useState } from "react";
 import { launchEntryBarChartData } from "@/lib/chartData";
+import { useLaunchIDStore } from "@/zustand/launchIDStore";
 
 const BarChart = () => {
   const [option, setOption] = useState<any>({});
+  const launchId = useLaunchIDStore((state)=> state.launchId);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await launchEntryBarChartData(10);
+      const res = await launchEntryBarChartData(10, launchId);
+      console.log("RES:ASD: ", res);
       let echartsOption = {
         tooltip: {
           trigger: "axis",
@@ -47,7 +50,7 @@ const BarChart = () => {
       setOption(echartsOption);
     };
     fetchData();
-  }, []);
+  }, [launchId]);
   return (
     <div className="w-full h-full">
       <ReactECharts

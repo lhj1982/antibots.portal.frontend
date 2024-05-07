@@ -1,13 +1,17 @@
 "use client";
 import ReactECharts from "echarts-for-react";
+import { Card } from "antd";
+import * as echarts from "echarts";
 import React, { useEffect, useState } from "react";
 import { launchEntryLocationData } from "@/lib/chartData";
+import { useLaunchIDStore } from "@/zustand/launchIDStore";
 
 const PieChart = () => {
   const [option, setOption] = useState<any>({});
+  const launchId = useLaunchIDStore((state)=> state.launchId);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await launchEntryLocationData();
+      const res = await launchEntryLocationData(launchId);
       const topTen = res?.slice(0, 10);
       let echartsOption = {
         title: {
@@ -63,7 +67,7 @@ const PieChart = () => {
       setOption(echartsOption);
     };
     fetchData();
-  },[]);
+  },[launchId]);
 
   return (
     <div className="w-full h-full">
