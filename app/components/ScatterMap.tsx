@@ -76,16 +76,22 @@ const ScatterMap = () => {
             coordinateSystem: "gmap",
             data: convertData(data),
             symbolSize: (val: any) => {
-              if( val[2] >= 100000) {
-                return val[2] / 1000 /2;
-               }else if (val[2] >= 10000 && val[2] < 100000) {
-                return val[2]/ 1000;
-              } else if (val[2] >= 1000 && val[2] < 10000) {
-                return val[2] / 100;
-              } else if (val[2] >= 100 && val[2] < 1000) {
-                return val[2] / 10;
-              } else {
-                return val[2]* 3;
+              {
+                let size = val[2];
+                size = Math.max(0, Math.min(200, size));
+                if (size >= 100000) {
+                  return size / 10000;
+                } else if (size >= 10000) {
+                  return size / 1000;
+                } else if (size >= 1000) {
+                  return size / 100;
+                } else if (size >= 100) {
+                  return size / 10;
+                }else if (size <100 && size >= 10){
+                  return size / 5;
+                } else {
+                  return size;
+                }
               }
             },
             encode: {
@@ -122,16 +128,22 @@ const ScatterMap = () => {
                 .slice(0, 6)
             ),
             symbolSize: (val: any) => {
-              if( val[2] >= 100000) {
-                return val[2] / 1000 /2;
-               }else if (val[2] >= 10000 && val[2] < 100000) {
-                return val[2]/ 1000;
-              } else if (val[2] >= 1000 && val[2] < 10000) {
-                return val[2] / 100;
-              } else if (val[2] >= 100 && val[2] < 1000) {
-                return val[2] / 10;
-              } else {
-                return val[2] * 2;
+              {
+                let size = val[2];
+                size = Math.max(0, Math.min(200, size));
+                if (size >= 100000) {
+                  return size / 10000;
+                } else if (size >= 10000) {
+                  return size / 1000;
+                } else if (size >= 1000) {
+                  return size / 100;
+                } else if (size >= 100) {
+                  return size / 10;
+                }else if (size <100 && size >= 10){
+                  return size / 3;
+                } else {
+                  return size;
+                }
               }
             },
             encode: {

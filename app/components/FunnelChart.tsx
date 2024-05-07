@@ -17,7 +17,7 @@ type SelfProps = {
   selected: number;
   validEntries: number;
   showFailures?: boolean;
-  test: number;
+  wafEntries: number;
 };
 
 const SVG_FAILURES_VIEWBOX_WIDTH = 450;
@@ -36,7 +36,7 @@ const FunnelChart = (props: SelfProps) => {
     selected,
     validEntries,
     showFailures,
-    test,
+    wafEntries,
   } = props;
 
   const textStyleNumber = cx(
@@ -137,7 +137,7 @@ const FunnelChart = (props: SelfProps) => {
           fontSize="28"
           className={textStyleNumber}
         >
-          {test}
+          {wafEntries}
         </text>
         <text
           x={textAlignPercentage}

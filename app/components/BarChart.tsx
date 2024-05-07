@@ -10,7 +10,6 @@ const BarChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await launchEntryBarChartData(10, launchId);
-      console.log("RES:ASD: ", res);
       let echartsOption = {
         tooltip: {
           trigger: "axis",

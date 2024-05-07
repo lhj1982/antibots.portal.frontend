@@ -23,3 +23,4 @@ export const NAMESPACE_PATH = process.env.NEXT_PUBLIC_NAMESPACE_PATH || "";
 export const JSON_SERVER_PATH = process.env.NEXT_JSON_SERVER_PATH || "";
 export const SCATTER_MAP_PATH = process.env.NEXT_SCATTER_MAP_PATH || "antibotswebb/v1/visual_map";
 export const BAR_PIE_PATH = process.env.NEXT_BAR_PIE_PATH || "antibotswebb/v1/visual_bar_pie";
+export const FUNNEL_PATH = process.env.NEXT_FUNNEL_PATH || "antibotswebb/v1/visual_funnel";
