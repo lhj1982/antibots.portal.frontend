@@ -57,12 +57,9 @@ const FunnelChart = (props: SelfProps) => {
   const textAlignPercentage = showFailures
     ? `${(308 / viewWidth / 2) * 100}%`
     : "50%";
-  const marginPoint = showFailures ? "0px 0px 0px calc(50% - 225px)" : "0 auto";
-
-  const levelHeight = SVG_HEIGHT / 6;
 
   return (
-    <div className="w-full h-full">
+    <div className="w-4/5 h-4/5">
       <svg
         viewBox={`0 0 ${viewWidth} ${SVG_HEIGHT}`}
         fill="none"
@@ -148,7 +145,7 @@ const FunnelChart = (props: SelfProps) => {
           fontSize="14"
           className={textStyleEntries}
         >
-          TEST
+          WAF ENTRIES 
         </text>
         <text
           x={textAlignPercentage}

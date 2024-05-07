@@ -21,3 +21,4 @@ export const LOCAL_STORAGE_USERNAME = "username";
 export const LOCAL_STORAGE_EMAIL = "email";
 export const NAMESPACE_PATH = process.env.NEXT_PUBLIC_NAMESPACE_PATH || "";
 export const JSON_SERVER_PATH = process.env.NEXT_JSON_SERVER_PATH || "";
+export const SCATTER_MAP_PATH = process.env.NEXT_SCATTER_MAP_PATH || "antibotswebb/v1/visual_map";

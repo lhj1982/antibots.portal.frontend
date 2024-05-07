@@ -11,20 +11,29 @@ import {
   Space,
 } from "antd";
 import { MonitorOutlined } from "@ant-design/icons";
+import { useEffect } from "react";
+import { useLaunchIDStore } from "@/zustand/launchIDStore";
 
 type SelfProps = {
-  handleChartProps: (input: any) => void;
+  handleStateUpdate: (result: any) => void;
+  launchIdOnly: boolean; 
 };
 
 const LaunchChartForm = (props: SelfProps) => {
-  const { handleChartProps } = props;
+  const {  handleStateUpdate, launchIdOnly } = props;
   const { Panel } = Collapse;
   const [form] = Form.useForm();
+  const launchIdState = useLaunchIDStore((state)=> state.launchId);
+
+  useEffect(()=>{
+    form.setFieldsValue({launchId: launchIdState});
+  })
 
   return (
     <Collapse
       accordion
       bordered={false}
+      size="small"
       expandIcon={({ isActive }) => (
         <MonitorOutlined rotate={isActive ? 90 : 0} />
       )}
@@ -44,27 +53,27 @@ const LaunchChartForm = (props: SelfProps) => {
             autoComplete="off"
             initialValues={{ items: [{}] }}
             className="w-full"
-            onFinish={(values) => {
+            onFinish={async (values) => {
               console.log(values);
-              handleChartProps(values);
+              handleStateUpdate(values.launchId);
             }}
           >
-            {/*first Row*/}
-            <Row gutter={16}>
-              <Col span={10}>
+            
                 <Form.Item name="launchId" label="Launch Id">
                   <Input style={{ width: 400 }} placeholder="Launch Id"></Input>
                 </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="Chart Type" name="chartType">
-                  <Select>
-                    <Select.Option value="pie">Pie Chart</Select.Option>
-                    <Select.Option value="bar">Bar Chart</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
+          
+              {launchIdOnly == false && (
+                
+                  <Form.Item label="Chart Type" name="chartType">
+                    <Select style={{ width: 400 }}>
+                      <Select.Option value="pie">Pie Chart</Select.Option>
+                      <Select.Option value="bar">Bar Chart</Select.Option>
+                    </Select>
+                  </Form.Item>
+                
+              )}
+           
             <Form.Item
               wrapperCol={{
                 xs: { span: 24, offset: 0 },

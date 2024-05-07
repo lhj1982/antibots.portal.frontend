@@ -1,7 +1,5 @@
 "use client";
 import ReactECharts from "echarts-for-react";
-import { Card } from "antd";
-import * as echarts from "echarts";
 import React, { useEffect, useState } from "react";
 import { launchEntryLocationData } from "@/lib/chartData";
 
