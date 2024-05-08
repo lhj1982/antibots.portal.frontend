@@ -7,26 +7,26 @@ import { useLaunchIDStore } from "@/zustand/launchIDStore";
 import { useEffect, useState } from "react";
 
 type FunnelData = {
-  "wafEntries": number,
-  "entries": number,
-  "validEntries": number,
-  "selected": number,
-  "winners": number
-}
+  wafEntries: number;
+  entries: number;
+  validEntries: number;
+  selected: number;
+  winners: number;
+};
 
 const FunnelPage = () => {
   const { setLaunchId } = useLaunchIDStore();
-  const launchId = useLaunchIDStore((state)=> state.launchId);
+  const launchId = useLaunchIDStore((state) => state.launchId);
   const [data, setData] = useState({} as FunnelData);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchData = async () => {
       const res = await launchEntryFunnelChart(launchId);
       setData(res);
       console.log(res);
-    }
+    };
     fetchData();
-  },[launchId]);
+  }, [launchId]);
 
   const totalWinners = data.winners;
   const totalEntries = data.entries;

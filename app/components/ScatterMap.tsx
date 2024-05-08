@@ -7,6 +7,7 @@ import { useLoadScript } from "@react-google-maps/api";
 import { launchEntryLocationData } from "@/lib/chartData";
 import geoCoording from "@/geo.json";
 import { useLaunchIDStore } from "@/zustand/launchIDStore";
+import { GOOGLE_API_KEY } from "@/utils/constants";
 
 interface GeoCoordMap {
   [name: string]: [number, number];
@@ -19,7 +20,7 @@ const ScatterMap = () => {
   const launchIdState = useLaunchIDStore((state) => state.launchId);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAp-Koaq2mnOesg_aUVDLVJ2-z7sRlEApo",
+    googleMapsApiKey: GOOGLE_API_KEY,
     libraries: ["marker", "places"],
   });
 
@@ -87,7 +88,7 @@ const ScatterMap = () => {
                   return size / 100;
                 } else if (size >= 100) {
                   return size / 10;
-                }else if (size <100 && size >= 10){
+                } else if (size < 100 && size >= 10) {
                   return size / 5;
                 } else {
                   return size;
@@ -139,7 +140,7 @@ const ScatterMap = () => {
                   return size / 100;
                 } else if (size >= 100) {
                   return size / 10;
-                }else if (size <100 && size >= 10){
+                } else if (size < 100 && size >= 10) {
                   return size / 3;
                 } else {
                   return size;

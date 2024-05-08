@@ -24,3 +24,4 @@ export const JSON_SERVER_PATH = process.env.NEXT_JSON_SERVER_PATH || "";
 export const SCATTER_MAP_PATH = process.env.NEXT_SCATTER_MAP_PATH || "antibotswebb/v1/visual_map";
 export const BAR_PIE_PATH = process.env.NEXT_BAR_PIE_PATH || "antibotswebb/v1/visual_bar_pie";
 export const FUNNEL_PATH = process.env.NEXT_FUNNEL_PATH || "antibotswebb/v1/visual_funnel";
+export const GOOGLE_API_KEY = "AIzaSyAp-Koaq2mnOesg_aUVDLVJ2-z7sRlEApo";
