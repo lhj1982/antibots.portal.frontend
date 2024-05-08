@@ -84,22 +84,28 @@ const SideMenu = () => {
                   {item.name}
                 </h1>
               </div>
-              <div className={`overflow-hidden transition-all duration-500 ease-linear ${expanded[index] ? 'max-h-96' : 'max-h-0'}`}>
-              {expanded[index] &&
-                item.children.map((subItem, subIndex) => (
-                  <Link href={subItem.path} key={subIndex}>
-                    <div className="flex h-10 pl-2">
-                      <h2
-                        className={`m-auto  hover:text-white ${
-                          currentPathname == subItem.path ? "text-red-200" : "text-zinc-500"
-                        }`}
-                      >
-                        {` - ${subItem.name}`}
-                      </h2>
-                    </div>
-                  </Link>
-                ))}
-                </div>
+              <div
+                className={`overflow-hidden transition-all duration-500 ease-linear ${
+                  expanded[index] ? "max-h-96" : "max-h-0"
+                }`}
+              >
+                {expanded[index] &&
+                  item.children.map((subItem, subIndex) => (
+                    <Link href={subItem.path} key={subIndex}>
+                      <div className="flex h-10 pl-2">
+                        <h2
+                          className={`m-auto  hover:text-white ${
+                            currentPathname == subItem.path
+                              ? "text-red-200"
+                              : "text-zinc-500"
+                          }`}
+                        >
+                          {` - ${subItem.name}`}
+                        </h2>
+                      </div>
+                    </Link>
+                  ))}
+              </div>
             </React.Fragment>
           )
         )}

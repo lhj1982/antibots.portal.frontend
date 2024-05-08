@@ -68,6 +68,27 @@ const FunnelChart = (props: SelfProps) => {
       >
         {showFailures && (
           <>
+            {wafEntries > 0 && entries >= 0 && (
+              <>
+                <line x1="290" y1="80" x2="450" y2="80" stroke="gray" />
+                <text
+                  x="100%"
+                  y="73"
+                  fontSize="18"
+                  className={textStyleFailureNumber}
+                >
+                  {wafEntries-entries}
+                </text>
+                <text
+                  x="100%"
+                  y="93"
+                  fontSize="12"
+                  className={textStyleFailureEntries}
+                >
+                  CDN WAF BLOCKED
+                </text>
+              </>
+            )}
             {validEntries > 0 && invalidEntries >= 0 && (
               <>
                 <line x1="270" y1="157" x2="450" y2="157" stroke="gray" />
