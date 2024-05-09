@@ -112,3 +112,8 @@ enum Role {
   Editor = "Editor",
   User = "User",
 };
+
+type chartFormData = {
+  "launchId" : string,
+  "chartType" ? : string
+}

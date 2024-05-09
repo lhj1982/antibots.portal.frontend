@@ -15,11 +15,11 @@ import moment from "moment";
 import { handleSearchQuery } from "@/lib/handleSearchQuery";
 
 type SelfProps = {
-    handleSearchProps: (query: string)=> void;
-}
+  handleSearchProps: (query: string) => void;
+};
 
 const SearchForm = (props: SelfProps) => {
-  const {handleSearchProps} = props;
+  const { handleSearchProps } = props;
   const { Panel } = Collapse;
   const [form] = Form.useForm();
   const creationDisabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -28,7 +28,6 @@ const SearchForm = (props: SelfProps) => {
   const ttlDisabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current && current <= moment().endOf("day");
   };
- 
 
   return (
     <Collapse
